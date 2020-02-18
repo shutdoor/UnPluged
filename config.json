@@ -1,0 +1,20 @@
+{
+    "menu":[
+        ["The Blocc","/"],
+        ["Features","features"],
+        ["Order","order"]
+    ],
+    "features":[
+        "Some kind of material",
+        "Verry square",
+        "Sharp corners",
+        "B L O C C Y",
+        "Kinda thicc ngl",
+        "Shiny, if you want it to be",
+        "Won't leave you like Jason did",
+        "Friendly??? IDK it's a block man. Im not here to discuss whether or not it has feelings"
+    ],
+    "featdesc":"The blocc is a revolutionary product of no purpose. Be amazed as it does aboslutely nothing but be a lasting reminder that we took your money.",
+    "bloccimg1":"/blocc1.png"
+    
+}

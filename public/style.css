@@ -1,0 +1,128 @@
+/* p{
+    color: red;
+} */
+html{
+    font-family: 'Staatliches', cursive;
+    background: rgb(149, 192, 218);
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+a:visited{
+    color: inherit;
+}
+a:hover{
+    color: #FFF;
+    text-decoration: underline;
+}
+
+#titleBar{
+    /* background-color: rgb(254, 255, 219); */
+    color: #ffffff;
+    flex: auto;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    font-size: 50px;
+    font-family: 'Coda Caption', sans-serif;
+}
+#logo{
+    height: 100px;
+    margin: 15px 5px;
+}
+#menu{
+    width: auto;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+}
+.menuItem{
+    margin: 0px 10px;
+    padding: 0px 5px;
+    color: #ffffff;
+    font-size: 20px;
+}
+#content{
+    background-color: rgb(254, 255, 219); 
+    height: auto;   
+    padding: 40px;
+    min-height: 500px;
+    max-width: 1366px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#featContent{
+    width: auto;
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+}
+#featDesc{
+    font-size: 30px;
+}
+#featList{
+    font-size: 20px;
+}
+#featImg{
+    margin-left: auto;
+    margin-right: 15%;
+    width: 30%;
+    height: 30%;
+
+}
+#mainPage{
+    width: auto;
+    display: flex;
+    flex-flow: column;
+}
+#descBox{
+    width: auto;
+    display: flex;
+    flex-flow: row;
+}
+#mainDesc{
+    font-size: 40px;
+}
+#subDesc{
+    margin-right: 5px;
+    font-size: 20px;
+}
+#mainImg{
+    margin-top: -15%;
+    margin-left: auto;
+    width: 50%;
+    height: 50%;
+}
+#order{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+}
+#orderTitle{
+    margin: 0px auto;
+    text-align: center;
+}
+#orderForm{
+    height: auto;
+    margin: 40px auto 0px 10%;
+    font-size: 20px;
+    display: flex;
+    flex-flow: column;
+}
+#orderDesc{
+    height: auto;
+    margin: 0px 10% 0px auto;
+    background-color: rgba(182, 232, 255, 0.521);
+    padding: 10px;
+    font-size: 20px;
+}
+h1{
+    font-size: 10px;
+}
+h2{
+    margin: 0 auto;
+    font-size: 40px;
+}

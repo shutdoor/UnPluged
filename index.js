@@ -19,9 +19,7 @@ const urlencodedParser = bodyParser.urlencoded({
 
 
 app.get('/', routes.index);
-// app.get('/order', routes.order);
-// app.get('/features', routes.features);
-// app.post('/submitted', urlencodedParser, routes.dealWithData);
+
 
 
 app.listen(3000);

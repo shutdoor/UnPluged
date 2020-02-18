@@ -19,7 +19,7 @@ const urlencodedParser = bodyParser.urlencoded({
 
 
 app.get('/', routes.index);
-
+app.post('/', urlencodedParser,routes.vote)
 
 
 app.listen(3000);

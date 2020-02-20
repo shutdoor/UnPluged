@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-// mongoose.connect("mongodb+srv://JavaScriptMain:5LBF$7=pVaVt3ta@unplugged-a8oex.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true }).catch(error=> console.log("error"));
-mongoose.connect("mongodb://localhost:27017/Test", {
-    useNewUrlParser: true
-}).catch(error => console.log("error"));
+mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true }).catch(error=> console.log("error"));
+// mongoose.connect("mongodb://localhost:27017/Test", {
+//     useNewUrlParser: true
+// }).catch(error => console.log("error"));
 
 var mdb = mongoose.connection;
 mdb.on('error', console.error.bind(console, 'connection error:'));
@@ -19,13 +19,34 @@ var PostSchema = new mongoose.Schema({
     score: Number
 });
 
+var accountSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    email: String
+});
+
 var post = mongoose.model("Post_Collection", PostSchema)
+var Account = mongoose.model('Account_Collection', accountSchema);
 
 
 var fs = require('fs')
 const config = require('../config')
 
-exports.index = (req, res) => {
+exports.index = (req, res) => { //login page
+    Account.find((err, account) => {
+        if (err) return console.error(err);
+        res.render('index', {
+            title: 'Log In To Your Account',
+            accounts: account
+        });
+    });
+    // res.render('login', {
+    //     "title": 'Log In To Your Account',
+    //     "config": config
+    // })
+};
+
+exports.main = (req, res) => {
     // post.create({
     //     time: Date.now().toString(),
     //     user: "Test",
@@ -40,7 +61,7 @@ exports.index = (req, res) => {
         if (err){console.error(err)} 
         else{
             // console.log(data);
-            res.render('index', {
+            res.render('main', {
                 title: 'Home',
                 "posts": data,
                 "config": config
@@ -68,3 +89,10 @@ exports.vote = (req, res)=>{
 
     res.redirect('/')
 }
+
+exports.signUp = (req, res) => { //signing up
+    res.render('signUp', {
+        "title": 'Sign Up For An Account',
+        "config": config
+    })
+};

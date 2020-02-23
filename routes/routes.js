@@ -17,13 +17,34 @@ var PostSchema = new mongoose.Schema({
     score: Number
 });
 
+var accountSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    email: String
+});
+
 var post = mongoose.model("Post_Collection", PostSchema)
+var Account = mongoose.model('Account_Collection', accountSchema);
 
 
 var fs = require('fs')
 const config = require('../config')
 
-exports.index = (req, res) => {
+exports.index = (req, res) => { //login page
+    Account.find((err, account) => {
+        if (err) return console.error(err);
+        res.render('index', {
+            title: 'Log In To Your Account',
+            accounts: account
+        });
+    });
+    // res.render('login', {
+    //     "title": 'Log In To Your Account',
+    //     "config": config
+    // })
+};
+
+exports.main = (req, res) => {
     // post.create({
     //     time: Date.now().toString(),
     //     user: "TestUser",
@@ -38,7 +59,7 @@ exports.index = (req, res) => {
         if (err){console.error(err)} 
         else{
             // console.log(data);
-            res.render('index', {
+            res.render('main', {
                 title: 'Home',
                 "posts": data,
                 "config": config
@@ -66,3 +87,10 @@ exports.vote = (req, res)=>{
 
     res.redirect('/')
 }
+
+exports.signUp = (req, res) => { //signing up
+    res.render('signUp', {
+        "title": 'Sign Up For An Account',
+        "config": config
+    })
+};

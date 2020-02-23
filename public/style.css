@@ -12,20 +12,21 @@ a{
 a:visited{
     color: inherit;
 }
-a:hover{
-    color: #FFF;
+.title:hover{
+    color: rgb(153, 44, 44);
     text-decoration: underline;
 }
 
 #titleBar{
     /* background-color: rgb(254, 255, 219); */
-    color: #ffffff;
-    flex: auto;
+    color: #f5eded;
+    /* flex: auto; */
     display: flex;
-    flex-flow: row;
+    /* flex-flow: row; */
     justify-content: center;
     font-size: 50px;
     font-family: 'Coda Caption', sans-serif;
+    text-decoration: underline;
 }
 #logo{
     height: 100px;
@@ -125,4 +126,50 @@ h1{
 h2{
     margin: 0 auto;
     font-size: 40px;
+}
+
+.btn {
+    font-family: 'Staatliches', cursive;
+    color: black;
+    background-color: rgb(254, 255, 219); 
+    text-align: center;
+    width: 40%;
+    border-radius: 4px;
+    margin: 4px;
+    padding: 20px;
+    transition: ease-in-out 170ms;
+    background-color: rgb(149, 192, 218); 
+    font-size: 40px;
+    border: 0px;
+    box-shadow: 
+    1px 1px #111,
+    4px 4px #222,
+    6px 6px #000,
+    8px 8px #000,
+    10px 10px #000;
+}
+a{
+    text-decoration: none;
+}
+.btn:hover{
+    background-color: #900905;
+    color: #FA739B;
+}
+.logPage {
+    text-align: center;
+    margin: 50px;
+}
+.loginPage {
+    font-size: 24px;
+}
+.signUpHeader {
+    text-align: center;
+    font-size: 40px;
+    text-decoration: underline;
+}
+.form {
+    text-align: center;
+    border: 5px solid;
+    /* margin: 80px; */
+    font-size: 28px;
 }

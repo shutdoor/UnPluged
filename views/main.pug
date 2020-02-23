@@ -6,7 +6,9 @@ block content
             p yeet
         div(id="descBox")
             div(id="subDesc")
-               p test
+               a(href="/post")
+                    p Plug Something
+
         ul
             each post in posts
                 li 
@@ -14,8 +16,9 @@ block content
                         p #{post.content}
                         p #{post.user}
                         p #{post.score}
-                        form(id="Vote" method="post" action="/")
+                        form(id="Vote" method="post" action="/feed")
                             input(type="hidden" name="id" value=post._id)
                             input(type="hidden" name="currentScore" value=post.score)
                             input(type="submit" name="Vote" value="Up")
                             input(type="submit" name="Vote" value="Down")
+                            input(type="submit" name="Vote" value="comment")

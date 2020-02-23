@@ -16,6 +16,10 @@ block content
                         p #{post.content}
                         p #{post.user}
                         p #{post.score}
+                        ul
+                            each comment in comments
+                                if comment.contextPostID == post._id
+                                    li #{comment.content}
                         form(id="Vote" method="post" action="/feed")
                             input(type="hidden" name="id" value=post._id)
                             input(type="hidden" name="currentScore" value=post.score)

@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    div(class="logPage")
+            form(id='form' method='POST' action="/main" onsubmit="return checkLogin()" class='loginPage')
+                p Username: <br/>
+                    input(type='text' id='usernameLogin' name="username")
+                p Password:<br/>
+                    input(type='text' id='passwordLogin' name="password")
+                p
+                    input(type='submit' value='Login' class="btn")
+            <br>
+            a(href="/signUp/" class="btn") Sign Up

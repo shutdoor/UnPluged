@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    div(class="postBorder")
+        form(class="postForm")
+            p(class="pageHeader") Upload an Image Plug!
+                p
+                label(for="img" class="imgLabel") Select image:  
+                input(type="file" id="img" name="img" accept="image/*")
+                p(class="pageHeader") Create a Caption!
+                textarea(id="caption" name="caption" maxlength="500" cols="32", rows="3")
+                p
+                    input(type="submit" class="btn")

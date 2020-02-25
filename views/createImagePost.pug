@@ -2,6 +2,12 @@ extends layout
 
 block content
     div(class="postBorder")
+        nav
+            ul
+                each item in config.createPost
+                    a(href = item[1])
+                        div(class='post_item')
+                            li(id=item[0]) #{item[0]}
         form(class="postForm")
             p(class="pageHeader") Upload an Image Plug!
                 p

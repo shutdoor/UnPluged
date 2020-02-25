@@ -226,3 +226,23 @@ exports.createComment = (req,res)=>{
 
     res.redirect('/feed');
 }
+exports.createImagePost = (req, res) => { //Image Post
+    res.render('createImagePost', {
+        "title": 'Upload a Post!',
+        "config": config
+    })
+};
+
+exports.createTextPost = (req, res) => { //Text Post
+    res.render('createTextPost', {
+        "title": 'Upload a Post!',
+        "config": config
+    })
+};
+
+exports.createVideoPost = (req, res) => { //Video Post
+    res.render('createVideoPost', {
+        "title": 'Upload a Post!',
+        "config": config
+    })
+};

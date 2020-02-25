@@ -1,4 +1,9 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
+
+
+
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true }).catch(error=> console.log("error"));
 // mongoose.connect("mongodb://localhost:27017/Test", {useNewUrlParser: true}).catch(error => console.log("error"));
@@ -13,11 +18,40 @@ mdb.once('open', function (callback) {
     console.log(mdb.name);
 });
 
-var PostSchema = new mongoose.Schema({
-    time: String,
-    user: String,
-    content: String,
-    score: Number
+var UserSchema = new mongoose.Schema({
+    "User ID": String,
+    Name: String,
+    Wsername: String,
+    Password: String,
+    Email: String,
+    "Date of Birth": Date,
+    Age: Number,
+    Role: String,
+    "Creation Date":Date,
+    "Post Removed": Number,
+    "User Location": String
+});
+
+var PostTextSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    Tile: String,
+    "Text Body": String,
+    Likes: Number,
+    Dislikes: Number,
+    Reports: Number,
+    "Post Date": Date
+});
+
+var PostImageSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    Tile: String,
+    "Image Link": String,
+    Likes: Number,
+    Dislikes: Number,
+    Reports: Number,
+    "Post Date": Date
 });
 var CommentSchema = new mongoose.Schema({
     contextPostID: String,
@@ -27,15 +61,18 @@ var CommentSchema = new mongoose.Schema({
     score: Number
 });
 
-var accountSchema = mongoose.Schema({
-    username: String,
-    password: String,
-    email: String
+var CommentSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    "Comment ID": String,
+    "Comment Text Body":String,
+    "Comment Date": Date
 });
 
 var post = mongoose.model("Post_Collection", PostSchema)
 var comment = mongoose.model("Comment_Collection", CommentSchema)
 var Account = mongoose.model('Account_Collection', accountSchema);
+var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
 
 var fs = require('fs')
@@ -63,20 +100,50 @@ exports.main = (req, res) => {
                 if (err){console.error(err)} 
                 else{
             // console.log(data);
-            res.render('main', {
+            res.render('index', {
                 title: 'Home',
                 "posts": postData,
                 "comments":commentData,
                 "config": config
             })}})}})};
 
-exports.vote = (req, res)=>{
-    // console.log(req.body);
+
+exports.userCreator = (req, res) => {
+    res.render('usercreating', {
+        title: 'Add Person'
+    });
+};
+
+exports.createUser = (req, res) => {
+
+    var user = new userData({
+        name: req.body.firstName + " " + req.body.lastName,
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+        email: req.body.email,
+        dateofbirth: req.body.DOB
+    });
+
+    user.save((err, user) => {
+        if (err) return console.error(err);
+        console.log(req.body.username + ' added');
+    });
+
+    // req.session.user = {
+    //     isAuthenticated: true
+    // }
+    // res.render('displayUser', {
+    //     user : user
+    // });
+};
+
+
+exports.vote = (req, res) => {
+    console.log(req.body);
     var score = req.body.currentScore
-    if (req.body.Vote == "comment"){
-        var postID = encodeURIComponent(req.body.id)
-        res.redirect('/comment' +"/?postID="+ postID);
-    } else if (req.body.Vote == "Down"){
+    if (req.body.Vote == "Up") {
+        score++;
+    } else if (req.body.Vote == "Down") {
         score--;
         res.redirect('/feed')
     } else if(req.body.Vote == "Up"){
@@ -84,10 +151,10 @@ exports.vote = (req, res)=>{
         res.redirect('/feed')
     }
     post.findByIdAndUpdate(req.body.id, {
-        $set:{
+        $set: {
             'score': score
         }
-    }, (err, todo)=>{
+    }, (err, todo) => {
         if (err) throw err;
     });
 

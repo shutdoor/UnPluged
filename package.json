@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/shutdoor/UnPluged#readme",
   "dependencies": {
+    "bcrypt": "^4.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.9.1",
     "pug": "^2.0.4",

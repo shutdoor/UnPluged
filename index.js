@@ -12,14 +12,13 @@ app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 app.use(express.static(path.join(__dirname + '/public')));
 
-
 const urlencodedParser = bodyParser.urlencoded({
     extended: true
 });
 
-
 app.get('/', routes.index);
 app.post('/', urlencodedParser,routes.vote)
-
+app.get('/signup', routes.userCreator);
+app.post('/signup', urlencodedParser, routes.createUser);
 
 app.listen(3000);

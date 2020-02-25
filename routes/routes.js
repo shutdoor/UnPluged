@@ -1,6 +1,14 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
+
+
+
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true }).catch(error=> console.log("error"));
+mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).catch(error => console.log("error"));
 // mongoose.connect("mongodb://localhost:27017/Test", {
 //     useNewUrlParser: true
 // }).catch(error => console.log("error"));
@@ -12,41 +20,58 @@ mdb.once('open', function (callback) {
     console.log(mdb.name);
 });
 
-var PostSchema = new mongoose.Schema({
-    time: String,
-    user: String,
-    content: String,
-    score: Number
+var UserSchema = new mongoose.Schema({
+    "User ID": String,
+    Name: String,
+    Wsername: String,
+    Password: String,
+    Email: String,
+    "Date of Birth": Date,
+    Age: Number,
+    Role: String,
+    "Creation Date":Date,
+    "Post Removed": Number,
+    "User Location": String
 });
 
-var accountSchema = mongoose.Schema({
-    username: String,
-    password: String,
-    email: String
+var PostTextSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    Tile: String,
+    "Text Body": String,
+    Likes: Number,
+    Dislikes: Number,
+    Reports: Number,
+    "Post Date": Date
 });
 
-var post = mongoose.model("Post_Collection", PostSchema)
-var Account = mongoose.model('Account_Collection', accountSchema);
+var PostImageSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    Tile: String,
+    "Image Link": String,
+    Likes: Number,
+    Dislikes: Number,
+    Reports: Number,
+    "Post Date": Date
+});
+
+var CommentSchema = new mongoose.Schema({
+    "User ID": String,
+    "Post ID": String,
+    "Comment ID": String,
+    "Comment Text Body":String,
+    "Comment Date": Date
+});
+
+var post = mongoose.model("Post_Collection", PostSchema);
+var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
 
 var fs = require('fs')
 const config = require('../config')
 
-exports.index = (req, res) => { //login page
-    Account.find((err, account) => {
-        if (err) return console.error(err);
-        res.render('index', {
-            title: 'Log In To Your Account',
-            accounts: account
-        });
-    });
-    // res.render('login', {
-    //     "title": 'Log In To Your Account',
-    //     "config": config
-    // })
-};
-
-exports.main = (req, res) => {
+exports.index = (req, res) => {
     // post.create({
     //     time: Date.now().toString(),
     //     user: "Test",
@@ -57,11 +82,12 @@ exports.main = (req, res) => {
     //     console.log(test.toString() + " Added");
     // });
 
-    var posts = post.find({}, (err, data)=>{
-        if (err){console.error(err)} 
-        else{
+    var posts = post.find({}, (err, data) => {
+        if (err) {
+            console.error(err)
+        } else {
             // console.log(data);
-            res.render('main', {
+            res.render('index', {
                 title: 'Home',
                 "posts": data,
                 "config": config
@@ -70,29 +96,51 @@ exports.main = (req, res) => {
     })
 };
 
+exports.userCreator = (req, res) => {
+    res.render('usercreating', {
+        title: 'Add Person'
+    });
+};
 
-exports.vote = (req, res)=>{
+exports.createUser = (req, res) => {
+
+    var user = new userData({
+        name: req.body.firstName + " " + req.body.lastName,
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+        email: req.body.email,
+        dateofbirth: req.body.DOB
+    });
+
+    user.save((err, user) => {
+        if (err) return console.error(err);
+        console.log(req.body.username + ' added');
+    });
+
+    // req.session.user = {
+    //     isAuthenticated: true
+    // }
+    // res.render('displayUser', {
+    //     user : user
+    // });
+};
+
+
+exports.vote = (req, res) => {
     console.log(req.body);
     var score = req.body.currentScore
-    if(req.body.Vote == "Up"){
+    if (req.body.Vote == "Up") {
         score++;
-    } else if (req.body.Vote == "Down"){
+    } else if (req.body.Vote == "Down") {
         score--;
     }
     post.findByIdAndUpdate(req.body.id, {
-        $set:{
+        $set: {
             'score': score
         }
-    }, (err, todo)=>{
+    }, (err, todo) => {
         if (err) throw err;
     });
 
     res.redirect('/')
 }
-
-exports.signUp = (req, res) => { //signing up
-    res.render('signUp', {
-        "title": 'Sign Up For An Account',
-        "config": config
-    })
-};

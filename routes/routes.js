@@ -145,12 +145,12 @@ exports.vote = (req, res) => {
     var score = req.body.currentScore
     if (req.body.Vote == "Up") {
         score++;
+        res.redirect('/feed')
     } else if (req.body.Vote == "Down") {
         score--;
         res.redirect('/feed')
-    } else if(req.body.Vote == "Up"){
-        score++;
-        res.redirect('/feed')
+    } else if(req.body.Vote == "Comment"){
+        res.redirect('/comment')
     }
     post.findByIdAndUpdate(req.body.id, {
         $set: {

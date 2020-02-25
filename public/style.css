@@ -181,6 +181,20 @@ a{
     font-size: 28px;
     height: 80%;
 }
+.post_item {
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid rgb(102, 63, 63);
+    width: 100px;
+    margin: 10px;
+    /* padding: 5px; */
+    text-align: center;
+    background: rgb(149, 192, 218)
+}
+li {
+    list-style: none;
+    text-align: center;
+}
 .imgLabel{
     font-size: 25px;
     text-decoration: none;

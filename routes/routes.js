@@ -5,8 +5,7 @@ var bcrypt = require('bcrypt');
 
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true }).catch(error=> console.log("error"));
-// mongoose.connect("mongodb://localhost:27017/Test", {useNewUrlParser: true}).catch(error => console.log("error"));
+mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error=> console.log("error"));
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -68,8 +67,6 @@ var accountSchema = mongoose.Schema({
     email: String
 });
 
-var post = mongoose.model("Post_Collection", PostTextSchema)
-var comment = mongoose.model("Comment_Collection", CommentSchema)
 var Account = mongoose.model('Account_Collection', accountSchema);
 var imagePostData = mongoose.model("textPost", PostTextSchema, "Text Post");
 var textPostData = mongoose.model("imagePost", PostImageSchema, "Image Post");

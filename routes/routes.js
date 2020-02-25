@@ -64,9 +64,10 @@ var CommentSchema = new mongoose.Schema({
     "Comment Date": Date
 });
 
-var post = mongoose.model("Post_Collection", PostSchema);
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
-
+var imagePostData = mongoose.model("textPost", PostTextSchema, "Text Post");
+var textPostData = mongoose.model("imagePost", PostImageSchema, "Image Post");
+var commentData = mongoose.model("comment", CommentSchema, "Comments");
 
 var fs = require('fs')
 const config = require('../config')

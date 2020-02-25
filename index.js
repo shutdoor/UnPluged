@@ -18,9 +18,9 @@ const urlencodedParser = bodyParser.urlencoded({
 
 app.get('/', routes.index);
 app.get('/feed', routes.main);
-app.get('/post', routes.makePost);
-app.get('/comment', routes.comment)
-app.post('/feed', urlencodedParser,routes.vote)
-app.post('/post', urlencodedParser,routes.createPost);
-app.post('/comment', urlencodedParser, routes.createComment)
+app.get('/textpost', routes.createTextPost);
+app.get('/comment', routes.comment);
+app.post('/feed', urlencodedParser,routes.vote);
+app.post('/textpost', urlencodedParser,routes.uploadTextPost);
+app.post('/comment', urlencodedParser, routes.createComment);
 app.listen(3000);

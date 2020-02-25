@@ -5,7 +5,7 @@ var bcrypt = require('bcrypt');
 
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error=> console.log("error"));
+mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error => console.log("error"));
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -18,47 +18,47 @@ mdb.once('open', function (callback) {
 });
 
 var UserSchema = new mongoose.Schema({
-    "User ID": String,
+    UserID: String,
     Name: String,
     Wsername: String,
     Password: String,
     Email: String,
-    "Date of Birth": Date,
+    DOB: Date,
     Age: Number,
     Role: String,
-    "Creation Date":Date,
-    "Post Removed": Number,
-    "User Location": String
+    CreationDate: Date,
+    PostRemoved: Number,
+    UserLocation: String
 });
 
 var PostTextSchema = new mongoose.Schema({
-    "User ID": String,
-    "Post ID": String,
+    UserID: String,
+    PostID: String,
     Tile: String,
-    "Text Body": String,
+    TextBody: String,
     Likes: Number,
     Dislikes: Number,
     Reports: Number,
-    "Post Date": Date
+    PostDate: Date
 });
 
 var PostImageSchema = new mongoose.Schema({
-    "User ID": String,
-    "Post ID": String,
+    UserID: String,
+    PostID: String,
     Tile: String,
-    "Image Link": String,
+    ImageLink: String,
     Likes: Number,
     Dislikes: Number,
     Reports: Number,
-    "Post Date": Date
+    PostDate: Date
 });
 
 var CommentSchema = new mongoose.Schema({
-    "User ID": String,
-    "Post ID": String,
-    "Comment ID": String,
-    "Comment Text Body":String,
-    "Comment Date": Date
+    UserID: String,
+    PostID: String,
+    CommentID: String,
+    CommentTextBody: String,
+    CommentDate: Date
 });
 
 var accountSchema = mongoose.Schema({
@@ -68,8 +68,8 @@ var accountSchema = mongoose.Schema({
 });
 
 var Account = mongoose.model('Account_Collection', accountSchema);
-var imagePostData = mongoose.model("textPost", PostTextSchema, "Text Post");
-var textPostData = mongoose.model("imagePost", PostImageSchema, "Image Post");
+var textPostData = mongoose.model("textPost", PostTextSchema, "User Post");
+var imagePostData = mongoose.model("imagePost", PostImageSchema, "User Post");
 var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
@@ -92,19 +92,26 @@ exports.index = (req, res) => { //login page
 };
 
 exports.main = (req, res) => {
-    post.find({}, (err, postData)=>{
-        if (err){console.error(err)} 
-        else{
-            comment.find({}, (err, commentData)=>{
-                if (err){console.error(err)} 
-                else{
-            // console.log(data);
-            res.render('main', {
-                Title: 'Home',
-                "posts": postData,
-                "comments":commentData,
-                "config": config
-            })}})}})};
+    textPostData.find({}, (err, postData) => {
+        if (err) {
+            console.error(err)
+        } else {
+            commentData.find({}, (err, commentData) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    // console.log(data);
+                    res.render('main', {
+                        Title: 'Home',
+                        "posts": postData,
+                        "comments": commentData,
+                        "config": config
+                    })
+                }
+            })
+        }
+    })
+};
 
 
 exports.userCreator = (req, res) => {
@@ -137,27 +144,6 @@ exports.createUser = (req, res) => {
 };
 
 
-exports.vote = (req, res) => {
-    console.log(req.body);
-    var score = req.body.currentScore
-    if (req.body.Vote == "Up") {
-        score++;
-        res.redirect('/feed')
-    } else if (req.body.Vote == "Down") {
-        score--;
-        res.redirect('/feed')
-    } else if(req.body.Vote == "Comment"){
-        res.redirect('/comment')
-    }
-    post.findByIdAndUpdate(req.body.id, {
-        $set: {
-            'score': score
-        }
-    }, (err, todo) => {
-        if (err) throw err;
-    });
-
-}
 
 exports.signUp = (req, res) => { //signing up
     res.render('signUp', {
@@ -166,63 +152,30 @@ exports.signUp = (req, res) => { //signing up
     })
 };
 
-exports.makePost = (req, res)=>{
-    res.render('post', {
-        "title": 'Make Post'
-    } )
-}
+// exports.createTextPostWHYWONTYOUWORK = (req,res)=>{
+//     console.log("------------------create text post--------------")
+//     // textPostData.create({
+//     //     UserID: "TestUser",
+//     //     TextBody: req.body.postText,
+//     //     Likes:0,
+//     //     Dislikes:0,
+//     //     PostDate:Date.now()
+//     // },(err, test)=>{
+//     //     if (err) return console.error(err);
+//     //     console.log(test.toString() + " Added");
+//     // });
+//     // res.redirect('/feed');
+//     res.send("<h1>Nani the fuck</h1>")
 
-exports.createPost = (req,res)=>{
-    post.create({
-        time: Date.now().toString(),
-        user: "TestUser",
-        content: req.body.postText,
-        score: 0
-    },(err, test)=>{
-        if (err) return console.error(err);
-        console.log(test.toString() + " Added");
-    });
+// }
+
+// exports.whatthefrick=(req,res)=>{
+//     res.send("<h1>Nani the fuck</h1>")
+// }
 
 
 
 
-    res.redirect('/feed');
-}
-
-exports.comment= (req,res)=>{
-    var contextPostID =  req.query.postID;
-    var contextPost = post.findById(contextPostID, (err,cPost)=>{
-        if (err) return console.error(err);
-        res.render('comment', {
-            "title":"Comment",
-            "postContent":cPost.content,
-            "postID": contextPostID
-        })
-    })
-}
-
-exports.createComment = (req,res)=>{
-    var contextPostID =  req.body.postID;
-    post.findById(contextPostID, (err,cPost)=>{
-        if (err) {return console.error(err)} 
-        else {
-            // console.log(contextPostID);
-            comment.create({
-                contextPostID: req.body.postID,
-                time: Date.now().toString(),
-                user: "TestUser",
-                content: req.body.postText,
-                score: 0
-            },(err, test)=>{
-                if (err) return console.error(err);
-                console.log(test.toString() +"Added");
-            });
-        }
-
-    })
-
-    res.redirect('/feed');
-}
 exports.createImagePost = (req, res) => { //Image Post
     res.render('createImagePost', {
         "title": 'Upload a Post!',
@@ -236,6 +189,23 @@ exports.createTextPost = (req, res) => { //Text Post
         "config": config
     })
 };
+exports.uploadTextPost = (req, res) => {
+    // console.log(req.body.postText);
+    textPostData.create({
+        UserID: "TestUser",
+        TextBody: req.body.postText,
+        Likes: 0,
+        Dislikes: 0,
+        PostDate: Date.now(),
+        PostID:Date.now().toString()
+    }, (err, test) => {
+        if (err) return console.error(err);
+        console.log(test.toString() + " Added");
+    });
+    res.redirect('/feed');
+}
+
+
 
 exports.createVideoPost = (req, res) => { //Video Post
     res.render('createVideoPost', {
@@ -243,3 +213,64 @@ exports.createVideoPost = (req, res) => { //Video Post
         "config": config
     })
 };
+
+exports.vote = (req, res) => {
+    // console.log(req.body);
+    var scoreUp = req.body.currentScoreUp
+    var scoreDown = req.body.currentScoreDown
+    if (req.body.Vote == "Up") {
+        scoreUp++;
+        res.redirect('/feed')
+    } else if (req.body.Vote == "Down") {
+        scoreDown++;
+        res.redirect('/feed')
+    } else if (req.body.Vote == "comment") {
+        var postID = encodeURIComponent(req.body.dbID)
+        res.redirect('/comment' +"/?postID="+ postID);
+    }
+    textPostData.findByIdAndUpdate(req.body.dbID, {
+        $set: {
+            'Likes': scoreUp,
+            "Dislikes": scoreDown
+        }
+    }, (err, todo) => {
+        if (err) throw err;
+    });
+
+}
+
+exports.comment = (req, res) => {
+    var contextPostID = req.query.postID;
+    var contextPost = textPostData.findById(contextPostID, (err, cPost) => {
+        if (err) return console.error(err);
+        res.render('comment', {
+            "title": "Comment",
+            "postContent": cPost.TextBody,
+            "postID": contextPostID
+        })
+    })
+}
+
+exports.createComment = (req, res) => {
+    var contextPostID = req.body.postID;
+    commentData.findById(contextPostID, (err, cPost) => {
+        if (err) {
+            return console.error(err)
+        } else {
+            console.log(req.body.postText);
+            commentData.create({
+                CommentID: Date.now().toString(),
+                PostID: req.body.postID,
+                UserID: "TestUser",
+                CommentTextBody: req.body.postText,
+                CommentDate:Date.now()
+            }, (err, test) => {
+                if (err) return console.error(err);
+                console.log(test.toString() + "Added");
+            });
+        }
+
+    })
+
+    res.redirect('/feed');
+}

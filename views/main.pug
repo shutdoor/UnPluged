@@ -6,23 +6,27 @@ block content
             p yeet
         div(id="descBox")
             div(id="subDesc")
-               a(href="/post")
+               a(href="/textpost")
                     p Plug Something
 
         ul
             each post in posts
                 li 
                     div(class="textPost")
-                        p #{post.content}
-                        p #{post.user}
-                        p #{post.score}
+                        p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+                        p #{post.TextBody}
+                        p #{post.UserID}
+                        p #{(post.Likes-post.Dislikes)}
                         ul
                             each comment in comments
-                                if comment.contextPostID == post._id
-                                    li #{comment.content}
+                                if comment.PostID == post._id
+                                    p _____________________________________________________________________
+                                    li #{comment.CommentTextBody}
                         form(id="Vote" method="post" action="/feed")
-                            input(type="hidden" name="id" value=post._id)
-                            input(type="hidden" name="currentScore" value=post.score)
+                            input(type="hidden" name="id" value=post.PostID)
+                            input(type="hidden" name="dbID" value=post._id)
+                            input(type="hidden" name="currentScoreUp" value=post.Likes)
+                            input(type="hidden" name="currentScoreDown" value=post.Dislikes)
                             input(type="submit" name="Vote" value="Up")
                             input(type="submit" name="Vote" value="Down")
                             input(type="submit" name="Vote" value="comment")

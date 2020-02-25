@@ -17,10 +17,10 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 app.get('/', routes.index);
-app.post('/feed', urlencodedParser,routes.vote)
 app.get('/feed', routes.main);
 app.get('/post', routes.makePost);
 app.get('/comment', routes.comment)
+app.post('/feed', urlencodedParser,routes.vote)
 app.post('/post', urlencodedParser,routes.createPost);
 app.post('/comment', urlencodedParser, routes.createComment)
 app.listen(3000);

@@ -53,13 +53,6 @@ var PostImageSchema = new mongoose.Schema({
     Reports: Number,
     "Post Date": Date
 });
-var CommentSchema = new mongoose.Schema({
-    contextPostID: String,
-    time: String,
-    user: String,
-    content: String,
-    score: Number
-});
 
 var CommentSchema = new mongoose.Schema({
     "User ID": String,
@@ -69,9 +62,18 @@ var CommentSchema = new mongoose.Schema({
     "Comment Date": Date
 });
 
-var post = mongoose.model("Post_Collection", PostSchema)
+var accountSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    email: String
+});
+
+var post = mongoose.model("Post_Collection", PostTextSchema)
 var comment = mongoose.model("Comment_Collection", CommentSchema)
 var Account = mongoose.model('Account_Collection', accountSchema);
+var imagePostData = mongoose.model("textPost", PostTextSchema, "Text Post");
+var textPostData = mongoose.model("imagePost", PostImageSchema, "Image Post");
+var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
 
@@ -100,8 +102,8 @@ exports.main = (req, res) => {
                 if (err){console.error(err)} 
                 else{
             // console.log(data);
-            res.render('index', {
-                title: 'Home',
+            res.render('main', {
+                Title: 'Home',
                 "posts": postData,
                 "comments":commentData,
                 "config": config

@@ -255,3 +255,4 @@ python2-venv
 
 .bat
 *.bat
+package-lock.json

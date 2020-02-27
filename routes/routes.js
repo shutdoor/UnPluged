@@ -61,14 +61,7 @@ var CommentSchema = new mongoose.Schema({
     CommentDate: Date
 });
 
-var CommentSchema = new mongoose.Schema({
-    contextPostID: String,
-    time: String,	    time: String,
-    user: String,	    user: String,
-    content: String,	    content: String,
-    score: Number,	    score: Number
-    // contextPostID :String	
-});	
+
 
 var accountSchema = mongoose.Schema({
     username: String,
@@ -153,37 +146,6 @@ exports.createUser = (req, res) => {
 };
 
 
-
-exports.comment= (req,res)=>{
-    var contextPostID =  req.query.postID;
-    var contextPost = post.findById(contextPostID, (err,cPost)=>{
-        if (err) return console.error(err);
-        res.render('comment', {
-            "title":"Comment",
-            "postContent":cPost.content
-        })
-    })
-}
-
-exports.createComment = (req,res)=>{
-    var contextPostID =  req.query.postID;
-    var contextPost = post.findById(contextPostID, (err,cPost)=>{
-        if (err) return console.error(err)
-        comment.create({
-            time: Date.now().toString(),
-            user: "TestUser",
-            content: req.body.postText,
-            score: 0,
-            contextPostID: contextPostID
-        },(err, test)=>{
-            if (err) return console.error(err);
-            console.log(test.toString() + " Added");
-        });
-
-    })
-
-    res.redirect('/feed');
-} 
 
 exports.signUp = (req, res) => { //signing up
     res.render('signUp', {

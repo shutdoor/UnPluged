@@ -3,11 +3,11 @@ extends layout
 block content
     div(class="postBorder")
         nav
-            //- ul
-            //-     each item in config.createPost
-            //-         a(href = item[1])
-            //-             div(class='post_item')
-            //-                 li(id=item[0]) #{item[0]}
+            ul
+                each item in config.createPost
+                    a(href = item[1])
+                        div(class='post_item')
+                            li(id=item[0]) #{item[0]}
         p(class="pageHeader") Upload a Text Plug!
         form(id='form' method='POST' action="/textpost")
             p

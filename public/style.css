@@ -190,6 +190,11 @@ a{
     text-align: center;
     background: rgb(149, 192, 218)
 }
+.textPost{
+    border: 2px solid;
+    margin: auto;
+    padding: 5px;
+}
 li {
     list-style: none;
     text-align: center;

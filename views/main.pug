@@ -1,12 +1,13 @@
 extends layout
 
 block content
-    div(id="mainPage")
-        div(id="mainDesc")
-            p yeet
-        div(id="descBox")
-            div(id="subDesc")
-               p test
+    div(class="postBorder")
+        nav
+            ul
+                each item in config.menu
+                    a(href = item[1])
+                        div(class='post_item')
+                            li(id=item[0]) #{item[0]}
         ul
             each post in posts
                 li 
@@ -14,8 +15,13 @@ block content
                         p #{post.content}
                         p #{post.user}
                         p #{post.score}
-                        form(id="Vote" method="post" action="/")
+                        ul
+                            each comment in comments
+                                if comment.contextPostID == post._id
+                                    li #{comment.content}
+                        form(id="Vote" method="post" action="/feed")
                             input(type="hidden" name="id" value=post._id)
                             input(type="hidden" name="currentScore" value=post.score)
                             input(type="submit" name="Vote" value="Up")
                             input(type="submit" name="Vote" value="Down")
+                            input(type="submit" name="Vote" value="Comment")

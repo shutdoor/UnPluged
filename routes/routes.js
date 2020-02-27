@@ -19,6 +19,15 @@ var PostSchema = new mongoose.Schema({
     score: Number
 });
 
+var CommentSchema = new mongoose.Schema({
+    contextPostID: String,
+    time: String,	    time: String,
+    user: String,	    user: String,
+    content: String,	    content: String,
+    score: Number,	    score: Number
+    // contextPostID :String	
+});	
+
 var accountSchema = mongoose.Schema({
     username: String,
     password: String,
@@ -27,6 +36,7 @@ var accountSchema = mongoose.Schema({
 
 var post = mongoose.model("Post_Collection", PostSchema)
 var Account = mongoose.model('Account_Collection', accountSchema);
+var comment = mongoose.model("Comment_Collection", CommentSchema)
 
 
 var fs = require('fs')
@@ -47,28 +57,19 @@ exports.index = (req, res) => { //login page
 };
 
 exports.main = (req, res) => {
-    // post.create({
-    //     time: Date.now().toString(),
-    //     user: "Test",
-    //     content: "Test Content",
-    //     score: 10
-    // },(err, test)=>{
-    //     if (err) return console.error(err);
-    //     console.log(test.toString() + " Added");
-    // });
-
-    var posts = post.find({}, (err, data)=>{
+    post.find({}, (err, postData)=>{
         if (err){console.error(err)} 
         else{
+            comment.find({}, (err, commentData)=>{
+                if (err){console.error(err)} 
+                else{
             // console.log(data);
             res.render('main', {
-                title: 'Home',
-                "posts": data,
+                Title: 'Home',
+                "posts": postData,
+                "comments":commentData,
                 "config": config
-            });
-        }
-    })
-};
+            })}})}})};
 
 
 exports.vote = (req, res)=>{
@@ -76,9 +77,14 @@ exports.vote = (req, res)=>{
     var score = req.body.currentScore
     if(req.body.Vote == "Up"){
         score++;
+        res.redirect('/')
     } else if (req.body.Vote == "Down"){
         score--;
-    }
+        res.redirect('/')
+    } else if (req.body.Vote == "comment"){
+        var postID = encodeURIComponent(req.body.id)
+        res.redirect('/comment' +"/?postID="+ postID);
+    };
     post.findByIdAndUpdate(req.body.id, {
         $set:{
             'score': score
@@ -87,8 +93,38 @@ exports.vote = (req, res)=>{
         if (err) throw err;
     });
 
-    res.redirect('/')
 }
+
+exports.comment= (req,res)=>{
+    var contextPostID =  req.query.postID;
+    var contextPost = post.findById(contextPostID, (err,cPost)=>{
+        if (err) return console.error(err);
+        res.render('comment', {
+            "title":"Comment",
+            "postContent":cPost.content
+        })
+    })
+}
+
+exports.createComment = (req,res)=>{
+    var contextPostID =  req.query.postID;
+    var contextPost = post.findById(contextPostID, (err,cPost)=>{
+        if (err) return console.error(err)
+        comment.create({
+            time: Date.now().toString(),
+            user: "TestUser",
+            content: req.body.postText,
+            score: 0,
+            contextPostID: contextPostID
+        },(err, test)=>{
+            if (err) return console.error(err);
+            console.log(test.toString() + " Added");
+        });
+
+    })
+
+    res.redirect('/feed');
+} 
 
 exports.signUp = (req, res) => { //signing up
     res.render('signUp', {

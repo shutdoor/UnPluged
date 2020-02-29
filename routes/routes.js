@@ -20,7 +20,7 @@ mdb.once('open', function (callback) {
 var UserSchema = new mongoose.Schema({
     UserID: String,
     Name: String,
-    Wsername: String,
+    Username: String,
     Password: String,
     Email: String,
     DOB: Date,
@@ -33,13 +33,15 @@ var UserSchema = new mongoose.Schema({
 
 var PostTextSchema = new mongoose.Schema({
     UserID: String,
+    Username:String,
     PostID: String,
     Tile: String,
     TextBody: String,
     Likes: Number,
     Dislikes: Number,
     Reports: Number,
-    PostDate: Date
+    PostDate: Date,
+    Category:String
 });
 
 var PostImageSchema = new mongoose.Schema({
@@ -75,9 +77,29 @@ var imagePostData = mongoose.model("imagePost", PostImageSchema, "User Post");
 var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
+const Categories = Object.freeze({
+    Sports:"Sports",
+    Movies:"Movies",
+    TV:"TV",
+    Cars:"Cars",
+    Fashion:"Fashion",
+    Events:"Events",
+    Questions:"Questions",
+    Memes:"Memes",
+    LocalWeirdos:"Local Weirdos"
+})
 
 var fs = require('fs')
 const config = require('../config')
+var currentUser;
+userData.findById("5e59b9380237258e8071509a", (err, user)=>{
+    if (err){
+        throw err;
+    }
+     currentUser = user;
+     console.log(`Current User is ${user.Username}`);
+})
+
 
 exports.index = (req, res) => { //login page
     Account.find((err, account) => {
@@ -194,12 +216,14 @@ exports.createTextPost = (req, res) => { //Text Post
 exports.uploadTextPost = (req, res) => {
     // console.log(req.body.postText);
     textPostData.create({
-        UserID: "TestUser",
+        UserID: currentUser.UserID,
+        Username: currentUser.Username,
         TextBody: req.body.postText,
         Likes: 0,
         Dislikes: 0,
         PostDate: Date.now(),
-        PostID:Date.now().toString()
+        PostID:Date.now().toString(),
+        Category:req.body.category
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
@@ -238,6 +262,23 @@ exports.vote = (req, res) => {
     }, (err, todo) => {
         if (err) throw err;
     });
+    // userData.create({
+    //     UserID:Date.now(),
+    //     Name:"Shelby McHorse",
+    //     Username:"Crowd Seeking Missile",
+    //     Password:"owowatdisdaddyKyuuuuun~~~~",
+    //     Email:"boss302@yeet.gov",
+    //     DOB:Date.now(),
+    //     Age:69,
+    //     Role:"User",
+    //     CreationDate:Date.now(),
+    //     PostRemoved:420,
+    //     UserLocation:"Dearborn, MI"
+
+    // }, (err, test) => {
+    //     if (err) return console.error(err);
+    //     console.log(test.toString() + " Added");
+    // });
 
 }
 
@@ -263,7 +304,7 @@ exports.createComment = (req, res) => {
             commentData.create({
                 CommentID: Date.now().toString(),
                 PostID: req.body.postID,
-                UserID: "TestUser",
+                UserID: currentUser.UserID,
                 CommentTextBody: req.body.postText,
                 CommentDate:Date.now()
             }, (err, test) => {

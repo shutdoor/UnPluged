@@ -13,8 +13,9 @@ block content
                 li 
                     div(class="textPost")
                         p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+                        h5 #{post.Category}
                         p #{post.TextBody}
-                        p #{post.UserID}
+                        h6 #{post.Username}
                         p #{(post.Likes-post.Dislikes)}
                         ul
                             each comment in comments

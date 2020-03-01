@@ -3,7 +3,6 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 
 
-
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error => console.log("error"));
 mongoose.set('useNewUrlParser', true);
@@ -33,7 +32,7 @@ var UserSchema = new mongoose.Schema({
 
 var PostTextSchema = new mongoose.Schema({
     UserID: String,
-    Username:String,
+    Username: String,
     PostID: String,
     Tile: String,
     TextBody: String,
@@ -41,7 +40,7 @@ var PostTextSchema = new mongoose.Schema({
     Dislikes: Number,
     Reports: Number,
     PostDate: Date,
-    Category:String
+    Category: String
 });
 
 var PostImageSchema = new mongoose.Schema({
@@ -78,26 +77,27 @@ var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
 const Categories = Object.freeze({
-    Sports:"Sports",
-    Movies:"Movies",
-    TV:"TV",
-    Cars:"Cars",
-    Fashion:"Fashion",
-    Events:"Events",
-    Questions:"Questions",
-    Memes:"Memes",
-    LocalWeirdos:"Local Weirdos"
+    Sports: "Sports",
+    Movies: "Movies",
+    TV: "TV",
+    Cars: "Cars",
+    Fashion: "Fashion",
+    Events: "Events",
+    Questions: "Questions",
+    Memes: "Memes",
+    LocalWeirdos: "Local Weirdos"
 })
 
 var fs = require('fs')
 const config = require('../config')
 var currentUser;
-userData.findById("5e59b9380237258e8071509a", (err, user)=>{
-    if (err){
+// userData.findById("5e59b9380237258e8071509a", (err, user)=>{
+userData.findById("5e5c14b42ce5913088a37c98", (err, user) => {
+    if (err) {
         throw err;
     }
-     currentUser = user;
-     console.log(`Current User is ${user.Username}`);
+    currentUser = user;
+    console.log(`Current User is ${user.Username}`);
 })
 
 
@@ -115,11 +115,27 @@ exports.index = (req, res) => { //login page
     // })
 };
 
+
 exports.main = (req, res) => {
+    var currentLocation = currentUser.UserLocation;
+
+
     textPostData.find({}, (err, postData) => {
         if (err) {
             console.error(err)
         } else {
+            postData.forEach(post => {
+                userData.find({
+                    UserID: post.UserID.toString()
+                }, (err, user) => {
+                    if (err) throw err;
+                    // console.log(post.Username+` is from ${user[0].UserLocation}`)
+                    var pIndex = postData.indexOf(post);
+                    if (user[0].UserLocation != currentLocation) {
+                        postData.splice(pIndex, 1);
+                    }
+                })
+            })
             commentData.find({}, (err, commentData) => {
                 if (err) {
                     console.error(err)
@@ -131,6 +147,7 @@ exports.main = (req, res) => {
                         "comments": commentData,
                         "config": config
                     })
+
                 }
             })
         }
@@ -176,30 +193,6 @@ exports.signUp = (req, res) => { //signing up
     })
 };
 
-// exports.createTextPostWHYWONTYOUWORK = (req,res)=>{
-//     console.log("------------------create text post--------------")
-//     // textPostData.create({
-//     //     UserID: "TestUser",
-//     //     TextBody: req.body.postText,
-//     //     Likes:0,
-//     //     Dislikes:0,
-//     //     PostDate:Date.now()
-//     // },(err, test)=>{
-//     //     if (err) return console.error(err);
-//     //     console.log(test.toString() + " Added");
-//     // });
-//     // res.redirect('/feed');
-//     res.send("<h1>Nani the fuck</h1>")
-
-// }
-
-// exports.whatthefrick=(req,res)=>{
-//     res.send("<h1>Nani the fuck</h1>")
-// }
-
-
-
-
 exports.createImagePost = (req, res) => { //Image Post
     res.render('createImagePost', {
         "title": 'Upload a Post!',
@@ -222,8 +215,8 @@ exports.uploadTextPost = (req, res) => {
         Likes: 0,
         Dislikes: 0,
         PostDate: Date.now(),
-        PostID:Date.now().toString(),
-        Category:req.body.category
+        PostID: Date.now().toString(),
+        Category: req.body.category
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
@@ -252,7 +245,7 @@ exports.vote = (req, res) => {
         res.redirect('/feed')
     } else if (req.body.Vote == "comment") {
         var postID = encodeURIComponent(req.body.dbID)
-        res.redirect('/comment' +"/?postID="+ postID);
+        res.redirect('/comment' + "/?postID=" + postID);
     }
     textPostData.findByIdAndUpdate(req.body.dbID, {
         $set: {
@@ -264,16 +257,16 @@ exports.vote = (req, res) => {
     });
     // userData.create({
     //     UserID:Date.now(),
-    //     Name:"Shelby McHorse",
-    //     Username:"Crowd Seeking Missile",
-    //     Password:"owowatdisdaddyKyuuuuun~~~~",
-    //     Email:"boss302@yeet.gov",
+    //     Name:"Loganathan Pala",
+    //     Username:"Forest Man",
+    //     Password:"heywhatthatinthetree",
+    //     Email:"ohno@hmmmm.jp",
     //     DOB:Date.now(),
     //     Age:69,
     //     Role:"User",
     //     CreationDate:Date.now(),
     //     PostRemoved:420,
-    //     UserLocation:"Dearborn, MI"
+    //     UserLocation:"Los Angeles, CA"
 
     // }, (err, test) => {
     //     if (err) return console.error(err);
@@ -306,7 +299,7 @@ exports.createComment = (req, res) => {
                 PostID: req.body.postID,
                 UserID: currentUser.UserID,
                 CommentTextBody: req.body.postText,
-                CommentDate:Date.now()
+                CommentDate: Date.now()
             }, (err, test) => {
                 if (err) return console.error(err);
                 console.log(test.toString() + "Added");

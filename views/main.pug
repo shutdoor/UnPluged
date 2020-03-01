@@ -1,6 +1,7 @@
 extends layout
 
 block content
+    script(src="/getLocation.js")
     div(class="postBorder")
         nav
             ul
@@ -12,6 +13,7 @@ block content
             each post in posts
                 li 
                     div(class="textPost")
+                        //- - console.log(post)
                         p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
                         h5 #{post.Category}
                         p #{post.TextBody}

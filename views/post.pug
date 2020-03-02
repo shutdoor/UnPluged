@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    div(class="logPage")
+        form(id='form' method='POST' action="/post")
+            p
+                textarea(name="postText", cols="69", rows="20")
+            p
+                input(type='submit' value='Plug It' class="btn")

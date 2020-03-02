@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    div(class="content")
+        p Username: #{currentUser.Username}
+        p First name: #{currentUser.Name.First}
+        p Last name: #{currentUser.Name.Last}
+        p Email: #{currentUser.Email}
+        p Date Of Birth: #{currentUser.DOB}
+        p Age: #{currentUser.Age}

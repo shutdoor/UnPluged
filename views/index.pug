@@ -1,21 +1,16 @@
 extends layout
 
 block content
-    div(id="mainPage")
-        div(id="mainDesc")
-            p yeet
-        div(id="descBox")
-            div(id="subDesc")
-               p test
-        ul
-            each post in posts
-                li 
-                    div(class="textPost")
-                        p #{post.content}
-                        p #{post.user}
-                        p #{post.score}
-                        form(id="Vote" method="post" action="/")
-                            input(type="hidden" name="id" value=post._id)
-                            input(type="hidden" name="currentScore" value=post.score)
-                            input(type="submit" name="Vote" value="Up")
-                            input(type="submit" name="Vote" value="Down")
+    div(class="logPage")
+            form(id='form' method='POST' action="/" class='loginPage')
+                label(for="username") Username:&nbsp;
+                br
+                input(type="text" name="username" required)
+                br
+                label(for="password") Password:&nbsp;
+                br
+                input(type="password" name="password" required)
+                br
+                input(type='submit' value='Login' class="btn")
+                br
+            a(href="/signUp" class="btn") Sign Up

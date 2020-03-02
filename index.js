@@ -17,8 +17,12 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 app.get('/', routes.index);
-app.post('/', urlencodedParser,routes.vote)
-app.get('/signup', routes.userCreator);
+app.get('/feed', routes.main);
+app.get('/textpost', routes.createTextPost);
+app.get('/comment', routes.comment);
+app.get('/signup', routes.userCreator)
+app.post('/feed', urlencodedParser,routes.vote);
+app.post('/textpost', urlencodedParser,routes.uploadTextPost);
+app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/signup', urlencodedParser, routes.createUser);
-
 app.listen(3000);

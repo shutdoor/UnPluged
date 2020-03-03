@@ -1,7 +1,5 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
-
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error => console.log("error"));
@@ -18,7 +16,10 @@ mdb.once('open', function (callback) {
 
 var UserSchema = new mongoose.Schema({
     UserID: String,
-    Name: String,
+    Name: {
+        First: String,
+        Last: String
+    },
     Username: String,
     Password: String,
     Email: String,
@@ -119,7 +120,6 @@ exports.index = (req, res) => { //login page
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
 
-
     textPostData.find({}, (err, postData) => {
         if (err) {
             console.error(err)
@@ -147,7 +147,6 @@ exports.main = (req, res) => {
                         "comments": commentData,
                         "config": config
                     })
-
                 }
             })
         }
@@ -156,20 +155,31 @@ exports.main = (req, res) => {
 
 
 exports.userCreator = (req, res) => {
-    res.render('usercreating', {
-        title: 'Add Person'
+    res.render('userCreator', {
+        "title": 'Add Person'
     });
 };
 
+var currentUser;
 exports.createUser = (req, res) => {
+    // var usernameBool = Boolean(validateUserName(req.body.username));
+    // var emailBool = Boolean(validateEmail(req.body.email));
+
+    // if (usernameBool && emailBool) {
 
     var user = new userData({
-        name: req.body.firstName + " " + req.body.lastName,
-        username: req.body.username,
-        password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
-        email: req.body.email,
-        dateofbirth: req.body.DOB
+        Name: {
+            First: req.body.firstName,
+            Last: req.body.lastName
+        },
+        Username: req.body.username,
+        Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+        Email: req.body.email,
+        DOB: req.body.DOB,
+        Age: getAge(req.body.DOB)
     });
+
+    currentUser = user;
 
     user.save((err, user) => {
         if (err) return console.error(err);
@@ -179,11 +189,33 @@ exports.createUser = (req, res) => {
     // req.session.user = {
     //     isAuthenticated: true
     // }
-    // res.render('displayUser', {
-    //     user : user
-    // });
+
+    res.render('displayUser', {
+        currentUser: currentUser
+    });
+    //     } else if (usernameBool) {
+    //         console.log("Username is already in use.");
+    //         res.redirect("/signup");
+    //     } else if (emailBool) {
+    //         console.log("Email is already in use.")
+    //         res.redirect("/signup");
+    //     }
 };
 
+const validateUserName = (userName) => {
+    console.log(userName);
+    userData.findOne({ Username: userName }, (err, user) => {
+        if (user != null) {
+            console.log(user.Username);
+            if (String(user.Username) === String(userName)) {
+                return true;
+            }
+            else if (String(user.Email) != String(email)) {
+                return false;
+            }
+        }
+    });
+}
 
 
 exports.signUp = (req, res) => { //signing up
@@ -251,12 +283,15 @@ exports.vote = (req, res) => {
         $set: {
             'Likes': scoreUp,
             "Dislikes": scoreDown
+
         }
-    }, (err, todo) => {
-        if (err) throw err;
     });
+
+
+
+
     // userData.create({
-    //     UserID:Date.now(),
+        //     UserID:Date.now(),
     //     Name:"Loganathan Pala",
     //     Username:"Forest Man",
     //     Password:"heywhatthatinthetree",
@@ -267,12 +302,12 @@ exports.vote = (req, res) => {
     //     CreationDate:Date.now(),
     //     PostRemoved:420,
     //     UserLocation:"Los Angeles, CA"
-
+    
     // }, (err, test) => {
-    //     if (err) return console.error(err);
+        //     if (err) return console.error(err);
     //     console.log(test.toString() + " Added");
     // });
-
+    
 }
 
 exports.comment = (req, res) => {
@@ -305,8 +340,31 @@ exports.createComment = (req, res) => {
                 console.log(test.toString() + "Added");
             });
         }
-
+        
     })
-
+    
     res.redirect('/feed');
 }
+
+const getAge = (DOB) => {
+    var today = new Date();
+    var birthDate = new Date(DOB);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var month = today.getMonth() - birthDate.getMonth();
+    if (month < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age = age - 1;
+    }
+    
+    return age;
+}
+const validateEmail = (email) => {
+        console.log(email);
+        userData.findOne({ Email: email }, (err, user) => {
+            if (user != null) {
+                console.log(user.Email);
+                if (String(user.Email) === String(email)) {
+                    return true;
+                }
+                else if (String(user.Email) != String(email)) {
+                    return false;
+                }}})}

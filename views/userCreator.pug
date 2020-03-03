@@ -1,0 +1,39 @@
+extends layout
+
+block content
+    div(class="content")
+        h1 Sign Up
+            form(id="signUp" class="form" method="post" action="/signup")
+                label(for="firstName") First Name:&nbsp;
+                br
+                input(type="text" name="firstName" required)
+                br
+                label(for="lastName") Last Name:&nbsp;
+                br
+                input(type="text" name="lastName")
+                br
+                label(for="username") Username:&nbsp;
+                br
+                input(type="text" name="username")
+                p(name="usernameError")
+                br
+                label(for="password") Password:&nbsp;
+                br
+                input(type="password"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$"
+                title="Must contain one number(0-9), one uppercase, one lowercase letter, a special character(!@#$%^&*), and a min length of 8 and max of 12."
+                name="password")
+                br
+                label(for="email") Email:&nbsp;
+                br
+                input(type="email" name="email")
+                p(name="emailError")
+                br
+                label(for="DOB") Date Of Birth:&nbsp;
+                br
+                input(type="date" name="DOB")
+                br
+                br
+                input(type="submit" class="submitButton")
+                a(href="/")
+                    p(id="testP") Log In

@@ -131,7 +131,7 @@ exports.main = (req, res) => {
                     if (err) throw err;
                     // console.log(post.Username+` is from ${user[0].UserLocation}`)
                     var pIndex = postData.indexOf(post);
-                    if (user[0].UserLocation != currentLocation) {
+                    if (user.UserLocation != currentLocation) {
                         postData.splice(pIndex, 1);
                     }
                 })

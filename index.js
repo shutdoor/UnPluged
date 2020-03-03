@@ -20,6 +20,8 @@ app.get('/', routes.index);
 app.get('/feed', routes.main);
 app.get('/createTextPost', routes.createTextPost);
 app.get('/comment', routes.comment);
+app.get('/signup', routes.userCreator);
+app.post('/signup', urlencodedParser, routes.createUser);
 app.post('/feed', urlencodedParser,routes.vote);
 app.post('/textpost', urlencodedParser,routes.uploadTextPost);
 app.post('/comment', urlencodedParser, routes.createComment);

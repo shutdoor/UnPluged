@@ -61,15 +61,6 @@ var CommentSchema = new mongoose.Schema({
     CommentDate: Date
 });
 
-var CommentSchema = new mongoose.Schema({
-    contextPostID: String,
-    time: String,	    time: String,
-    user: String,	    user: String,
-    content: String,	    content: String,
-    score: Number,	    score: Number
-    // contextPostID :String	
-});	
-
 var accountSchema = mongoose.Schema({
     username: String,
     password: String,
@@ -258,13 +249,13 @@ exports.vote = (req, res) => {
     // console.log(req.body);
     var scoreUp = req.body.currentScoreUp
     var scoreDown = req.body.currentScoreDown
-    if (req.body.Vote == "Up") {
+    if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect('/feed')
-    } else if (req.body.Vote == "Down") {
+    } else if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect('/feed')
-    } else if (req.body.Vote == "comment") {
+    } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' +"/?postID="+ postID);
     }

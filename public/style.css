@@ -194,8 +194,16 @@ a{
 .textPost{
     border: 2px solid;
     margin-right: 40px;
+    text-align: center;
     font-size: 15px;
-    padding: 5px;
+    padding: 10px;
+}
+.commentPost{
+    border: 2px solid;
+    height: 500px;
+    text-align: center;
+    font-size: 15px;
+    padding: 10px;
 }
 li {
     list-style: none;

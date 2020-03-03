@@ -9,20 +9,21 @@ a{
 a:visited{
     color: inherit;
 }
-a:hover{
-    color: #FFF;
+.title:hover{
+    color: rgb(153, 44, 44);
     text-decoration: underline;
 }
 
 #titleBar{
     /* background-color: rgb(254, 255, 219); */
-    color: #ffffff;
-    flex: auto;
+    color: #f5eded;
+    /* flex: auto; */
     display: flex;
-    flex-flow: row;
+    /* flex-flow: row; */
     justify-content: center;
     font-size: 50px;
     font-family: 'Coda Caption', sans-serif;
+    text-decoration: underline;
 }
 #logo{
     height: 100px;
@@ -190,8 +191,17 @@ a{
 }
 .textPost{
     border: 2px solid;
-    margin-right: 10px;
-    padding: 5px;
+    margin-right: 40px;
+    text-align: center;
+    font-size: 15px;
+    padding: 10px;
+}
+.commentPost{
+    border: 2px solid;
+    height: 500px;
+    text-align: center;
+    font-size: 15px;
+    padding: 10px;
 }
 li {
     list-style: none;

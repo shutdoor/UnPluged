@@ -269,13 +269,13 @@ exports.vote = (req, res) => {
     // console.log(req.body);
     var scoreUp = req.body.currentScoreUp
     var scoreDown = req.body.currentScoreDown
-    if (req.body.Vote == "Up") {
+    if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect('/feed')
-    } else if (req.body.Vote == "Down") {
+    } else if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect('/feed')
-    } else if (req.body.Vote == "comment") {
+    } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
     }

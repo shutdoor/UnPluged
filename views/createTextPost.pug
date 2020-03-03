@@ -10,6 +10,9 @@ block content
                             li(id=item[0]) #{item[0]}
         p(class="pageHeader") Upload a Text Plug!
         form(id='form' method='POST' action="/textpost")
+            p Image URL
+            p
+                input(type="text", name="imageURL")
             p
                 textarea(id="text",name="postText",cols="40", rows="10")
             p

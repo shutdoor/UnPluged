@@ -9,11 +9,6 @@ a{
 a:visited{
     color: inherit;
 }
-.title:hover{
-    color: rgb(153, 44, 44);
-    text-decoration: underline;
-}
-
 #titleBar{
     /* background-color: rgb(254, 255, 219); */
     color: #f5eded;
@@ -188,6 +183,10 @@ a{
     text-align: center;
     background: rgb(149, 192, 218)
     
+}
+.post_item:hover{
+    background-color: #900905;
+    color: #FA739B;
 }
 .textPost{
     border: 2px solid;

@@ -1,11 +1,15 @@
 {
     "menu": [
-        ["Home", "/"],
-        ["Post", "createTextPost"]
+        ["Home", "/feed"],
+        ["Tags", "tagFiltering"],
+        ["Post", "createTextPost"],
+        ["Logout", "/"]
+        
 
     ],
 
     "createPost": [
+        ["Home", "/feed"],
         ["Text", "createTextPost"],
         ["Image", "createImagePost"],
         ["Video", "createVideoPost"]

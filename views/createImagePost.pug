@@ -8,12 +8,20 @@ block content
                     a(href = item[1])
                         div(class='post_item')
                             li(id=item[0]) #{item[0]}
-        form(class="postForm")
-            p(class="pageHeader") Upload an Image Plug!
-                p
-                label(for="img" class="imgLabel") Select image:  
-                input(type="file" id="img" name="img" accept="image/*")
-                p(class="pageHeader") Create a Caption!
-                textarea(id="caption" name="caption" maxlength="500" cols="32", rows="3")
-                p
-                    input(type="submit" class="btn")
+        p(class="pageHeader") Upload An Image Plug!
+        form(id='form' method='POST' action="/imagepost" enctype="multipart/form-data")
+            input(type="file" name="imageFile" accept=".png")
+            p
+                select(name="category")
+                    option(value="Sports") Sports
+                    option(value="Movies") Movies
+                    option(value="TV") TV
+                    option(value="Cars") Cars
+                    option(value="Fashion") Fashion
+                    option(value="Events") Events
+                    option(value="Questions") Questions
+                    option(value="Memes") Memes
+                    option(value="LocalWeirdos") Local Weirdos
+            p
+                input(type='submit',value='Plug It',class="btn")
+                

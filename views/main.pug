@@ -16,7 +16,9 @@ block content
                     div(class="textPost")
                         //- - console.log(post)
                         p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-                        h3 #{post.Category}
+                        h5 #{post.Category}
+                        if post.Image != null
+                            img(src='data:image/png;base64,'+post.Image class="postImage")
                         p #{post.TextBody}
                         h6 #{post.Username}
                         p #{(post.Likes-post.Dislikes)}

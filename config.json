@@ -11,8 +11,7 @@
     "createPost": [
         ["Home", "/feed"],
         ["Text", "createTextPost"],
-        ["Image", "createImagePost"],
-        ["Video", "createVideoPost"]
+        ["Image", "createImagePost"]
     ]
 
     

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-
+const formidable = require('formidable');
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error => console.log("error"));
 mongoose.set('useNewUrlParser', true);
@@ -31,28 +31,19 @@ var UserSchema = new mongoose.Schema({
     UserLocation: String
 });
 
-var PostTextSchema = new mongoose.Schema({
+var PostSchema = new mongoose.Schema({
     UserID: String,
     Username: String,
     PostID: String,
     Tile: String,
     TextBody: String,
+    Image: String,
     Likes: Number,
     Dislikes: Number,
     Reports: Number,
     PostDate: Date,
-    Category: String
-});
-
-var PostImageSchema = new mongoose.Schema({
-    UserID: String,
-    PostID: String,
-    Tile: String,
-    ImageLink: String,
-    Likes: Number,
-    Dislikes: Number,
-    Reports: Number,
-    PostDate: Date
+    Category: String,
+    UserLocation: String
 });
 
 var CommentSchema = new mongoose.Schema({
@@ -72,8 +63,7 @@ var accountSchema = mongoose.Schema({
 });
 
 var Account = mongoose.model('Account_Collection', accountSchema);
-var textPostData = mongoose.model("textPost", PostTextSchema, "User Post");
-var imagePostData = mongoose.model("imagePost", PostImageSchema, "User Post");
+var postData = mongoose.model("textPost", PostSchema, "User Post");
 var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
@@ -92,8 +82,8 @@ const Categories = Object.freeze({
 var fs = require('fs')
 const config = require('../config')
 var currentUser;
-// userData.findById("5e59b9380237258e8071509a", (err, user)=>{
-userData.findById("5e5c14b42ce5913088a37c98", (err, user) => {
+userData.findById("5e59b9380237258e8071509a", (err, user) => {
+    // userData.findById("5e5c14b42ce5913088a37c98", (err, user) => {
     if (err) {
         throw err;
     }
@@ -119,28 +109,17 @@ exports.index = (req, res) => { //login page
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
-
-    textPostData.find({}, (err, postData) => {
+    console.log(currentLocation);
+    postData.find({
+        UserLocation: currentLocation
+    }, (err, postData) => {
         if (err) {
             console.error(err)
         } else {
-            postData.forEach(post => {
-                userData.find({
-                    UserID: post.UserID.toString()
-                }, (err, user) => {
-                    if (err) throw err;
-                    // console.log(post.Username+` is from ${user[0].UserLocation}`)
-                    var pIndex = postData.indexOf(post);
-                    if (user.UserLocation != currentLocation) {
-                        postData.splice(pIndex, 1);
-                    }
-                })
-            })
             commentData.find({}, (err, commentData) => {
                 if (err) {
                     console.error(err)
                 } else {
-                    // console.log(data);
                     res.render('main', {
                         title: 'UnPlugged',
                         "posts": postData,
@@ -204,13 +183,14 @@ exports.createUser = (req, res) => {
 
 const validateUserName = (userName) => {
     console.log(userName);
-    userData.findOne({ Username: userName }, (err, user) => {
+    userData.findOne({
+        Username: userName
+    }, (err, user) => {
         if (user != null) {
             console.log(user.Username);
             if (String(user.Username) === String(userName)) {
                 return true;
-            }
-            else if (String(user.Email) != String(email)) {
+            } else if (String(user.Email) != String(email)) {
                 return false;
             }
         }
@@ -225,22 +205,15 @@ exports.signUp = (req, res) => { //signing up
     })
 };
 
-exports.createImagePost = (req, res) => { //Image Post
-    res.render('createImagePost', {
-        "title": 'Upload a Post!',
-        "config": config
-    })
-};
-
 exports.createTextPost = (req, res) => { //Text Post
     res.render('createTextPost', {
         "title": 'Upload a Post!',
         "config": config
     })
 };
-exports.uploadTextPost = (req, res) => {
+exports.uploadPost = (req, res) => {
     // console.log(req.body.postText);
-    textPostData.create({
+    postData.create({
         UserID: currentUser.UserID,
         Username: currentUser.Username,
         TextBody: req.body.postText,
@@ -248,10 +221,65 @@ exports.uploadTextPost = (req, res) => {
         Dislikes: 0,
         PostDate: Date.now(),
         PostID: Date.now().toString(),
-        Category: req.body.category
+        Category: req.body.category,
+        UserLocation: currentUser.UserLocation
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
+    });
+    res.redirect('/feed');
+}
+
+
+exports.createImagePost = (req, res) => { //Image Post
+    res.render('createImagePost', {
+        "title": 'Upload a Post!',
+        "config": config
+    })
+};
+exports.uploadImage = (req, res) => {
+    // console.log(req.body.postText);
+
+    const form = formidable({
+        multiples: true
+    });
+    var imagePath;
+    form.parse(req)
+    //Upload File
+    form.on('fileBegin', (name, file) => {
+        file.path = __dirname + '\\uploads\\' + file.name;
+        imagePath = __dirname + '\\uploads\\' + file.name;
+        // console.log(imagePath);
+    });
+    form.on('file', (name, file) => {
+        //Encode File
+        fs.readFile(imagePath, (err, data) => {
+            if (err) console.error(err);
+            imgEncode = new Buffer(data).toString('base64');
+            // console.log(imgEncode);
+
+            //Create Post
+            postData.create({
+                UserID: currentUser.UserID,
+                Username: currentUser.Username,
+                TextBody: req.body.postText,
+                Likes: 0,
+                Dislikes: 0,
+                PostDate: Date.now(),
+                PostID: Date.now().toString(),
+                Category: req.body.category,
+                UserLocation: currentUser.UserLocation,
+                Image:imgEncode
+            }, (err, test) => {
+                if (err) return console.error(err);
+                console.log(test.toString() + " Added");
+            });
+
+            //Delete local file
+            fs.unlink(imagePath, (err)=>{if(err)console.error(err)});
+
+        })
+
     });
     res.redirect('/feed');
 }
@@ -279,7 +307,7 @@ exports.vote = (req, res) => {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
     }
-    textPostData.findByIdAndUpdate(req.body.dbID, {
+    postData.findByIdAndUpdate(req.body.dbID, {
         $set: {
             'Likes': scoreUp,
             "Dislikes": scoreDown
@@ -291,7 +319,7 @@ exports.vote = (req, res) => {
 
 
     // userData.create({
-        //     UserID:Date.now(),
+    //     UserID:Date.now(),
     //     Name:"Loganathan Pala",
     //     Username:"Forest Man",
     //     Password:"heywhatthatinthetree",
@@ -302,17 +330,17 @@ exports.vote = (req, res) => {
     //     CreationDate:Date.now(),
     //     PostRemoved:420,
     //     UserLocation:"Los Angeles, CA"
-    
+
     // }, (err, test) => {
-        //     if (err) return console.error(err);
+    //     if (err) return console.error(err);
     //     console.log(test.toString() + " Added");
     // });
-    
+
 }
 
 exports.comment = (req, res) => {
     var contextPostID = req.query.postID;
-    var contextPost = textPostData.findById(contextPostID, (err, cPost) => {
+    var contextPost = postData.findById(contextPostID, (err, cPost) => {
         if (err) return console.error(err);
         res.render('comment', {
             "title": "Comment",
@@ -340,9 +368,9 @@ exports.createComment = (req, res) => {
                 console.log(test.toString() + "Added");
             });
         }
-        
+
     })
-    
+
     res.redirect('/feed');
 }
 
@@ -354,17 +382,21 @@ const getAge = (DOB) => {
     if (month < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age = age - 1;
     }
-    
+
     return age;
 }
 const validateEmail = (email) => {
-        console.log(email);
-        userData.findOne({ Email: email }, (err, user) => {
-            if (user != null) {
-                console.log(user.Email);
-                if (String(user.Email) === String(email)) {
-                    return true;
-                }
-                else if (String(user.Email) != String(email)) {
-                    return false;
-                }}})}
+    console.log(email);
+    userData.findOne({
+        Email: email
+    }, (err, user) => {
+        if (user != null) {
+            console.log(user.Email);
+            if (String(user.Email) === String(email)) {
+                return true;
+            } else if (String(user.Email) != String(email)) {
+                return false;
+            }
+        }
+    })
+}

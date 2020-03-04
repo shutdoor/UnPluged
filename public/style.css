@@ -190,7 +190,7 @@ a{
 }
 .textPost{
     border: 2px solid;
-    margin-right: 40px;
+    margin-right: 38px;
     text-align: center;
     font-size: 15px;
     padding: 10px;
@@ -211,5 +211,5 @@ li {
     text-decoration: none;
 }
 .navBar{
-    margin-right: 60px;
+    margin-right: 50px;
 }

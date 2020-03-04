@@ -7,7 +7,6 @@
 
     "createPost": [
         ["Image", "createImagePost"],
-        ["Video", "createVideoPost"],
         ["Text", "createTextPost"]
     ]
 

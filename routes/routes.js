@@ -142,7 +142,7 @@ exports.main = (req, res) => {
                 } else {
                     // console.log(data);
                     res.render('main', {
-                        Title: 'Home',
+                        title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
                         "config": config

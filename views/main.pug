@@ -2,7 +2,7 @@ extends layout
 
 block content
     div(class="postBorder")
-        nav
+        nav(class='navBar')
             ul
                 each item in config.menu
                     a(href = item[1])
@@ -14,7 +14,7 @@ block content
                     div(class="textPost")
                         //- - console.log(post)
                         p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-                        h5 #{post.Category}
+                        h3 #{post.Category}
                         p #{post.TextBody}
                         h6 #{post.Username}
                         p #{(post.Likes-post.Dislikes)}

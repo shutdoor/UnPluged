@@ -6,9 +6,9 @@
     ],
 
     "createPost": [
+        ["Text", "createTextPost"],
         ["Image", "createImagePost"],
-        ["Video", "createVideoPost"],
-        ["Text", "createTextPost"]
+        ["Video", "createVideoPost"]
     ]
 
     

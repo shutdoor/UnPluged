@@ -44,7 +44,7 @@ a:visited{
 #content{
     background-color: rgb(254, 255, 219); 
     height: auto;   
-    padding: 40px;
+    padding: 30px;
     min-height: 500px;
     max-width: 1366px;
     margin-left: auto;
@@ -130,10 +130,10 @@ h2{
     color: black;
     background-color: rgb(254, 255, 219); 
     text-align: center;
-    width: 25%;
+    width: 30%;
     border-radius: 4px;
     margin: 4px;
-    padding: 20px;
+    padding: 15px;
     transition: ease-in-out 170ms;
     background-color: rgb(149, 192, 218); 
     font-size: 40px;
@@ -159,6 +159,7 @@ a{
 .loginPage {
     font-size: 24px;
     border: 5px solid;
+    height: 450px;
 }
 .pageHeader {
     text-align: center;
@@ -184,7 +185,6 @@ a{
     border: 1px solid rgb(102, 63, 63);
     width: 100px;
     margin: 10px;
-    /* padding: 5px; */
     text-align: center;
     background: rgb(149, 192, 218)
     
@@ -210,4 +210,7 @@ li {
 .imgLabel{
     font-size: 25px;
     text-decoration: none;
+}
+.navBar{
+    margin-right: 60px;
 }

@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const formidable = require('formidable');
+const expressSession = require('express-session');
+
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://tester:a@unplugged-a8oex.azure.mongodb.net/UnPlugged?retryWrites=true&w=majority").catch(error => console.log("error"));
 mongoose.set('useNewUrlParser', true);
@@ -82,17 +84,11 @@ const Categories = Object.freeze({
 var fs = require('fs')
 const config = require('../config')
 var currentUser;
-userData.findById("5e59b9380237258e8071509a", (err, user) => {
-    // userData.findById("5e5c14b42ce5913088a37c98", (err, user) => {
-    if (err) {
-        throw err;
-    }
-    currentUser = user;
-    console.log(`Current User is ${user.Username}`);
-})
+// userData.findById("5e59b9380237258e8071509a", (err, user)=>{
 
 
-exports.index = (req, res) => { //login page
+
+exports.index = (req, res) => {
     Account.find((err, account) => {
         if (err) return console.error(err);
         res.render('index', {
@@ -116,6 +112,18 @@ exports.main = (req, res) => {
         if (err) {
             console.error(err)
         } else {
+            postData.forEach(post => {
+                userData.find({
+                    UserID: post.UserID.toString()
+                }, (err, user) => {
+                    if (err) throw err;
+                    // console.log(post.Username+` is from ${user[0].UserLocation}`)
+                    var pIndex = postData.indexOf(post);
+                    if (user.UserLocation != currentLocation) {
+                        postData.splice(pIndex, 1);
+                    }
+                })
+            })
             commentData.find({}, (err, commentData) => {
                 if (err) {
                     console.error(err)
@@ -314,28 +322,6 @@ exports.vote = (req, res) => {
 
         }
     });
-
-
-
-
-    // userData.create({
-    //     UserID:Date.now(),
-    //     Name:"Loganathan Pala",
-    //     Username:"Forest Man",
-    //     Password:"heywhatthatinthetree",
-    //     Email:"ohno@hmmmm.jp",
-    //     DOB:Date.now(),
-    //     Age:69,
-    //     Role:"User",
-    //     CreationDate:Date.now(),
-    //     PostRemoved:420,
-    //     UserLocation:"Los Angeles, CA"
-
-    // }, (err, test) => {
-    //     if (err) return console.error(err);
-    //     console.log(test.toString() + " Added");
-    // });
-
 }
 
 exports.comment = (req, res) => {
@@ -379,7 +365,7 @@ const getAge = (DOB) => {
     var birthDate = new Date(DOB);
     var age = today.getFullYear() - birthDate.getFullYear();
     var month = today.getMonth() - birthDate.getMonth();
-    if (month < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
         age = age - 1;
     }
 

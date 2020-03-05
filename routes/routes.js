@@ -109,7 +109,7 @@ exports.index = (req, res) => { //login page
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
-    console.log(currentLocation);
+    // console.log(currentLocation);
     postData.find({
         UserLocation: currentLocation
     }, (err, postData) => {

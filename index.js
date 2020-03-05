@@ -11,7 +11,9 @@ const config = require('./config');
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 app.use(express.static(path.join(__dirname + '/public')));
-
+app.use('/path', (req, res, next) => {
+    
+});
 const urlencodedParser = bodyParser.urlencoded({
     extended: true
 });
@@ -22,6 +24,9 @@ app.get('/createTextPost', routes.createTextPost);
 app.get('/comment', routes.comment);
 app.get('/signup', routes.userCreator);
 app.get('/createImagePost', routes.createImagePost);
+
+
+
 app.post('/signup', urlencodedParser, routes.createUser);
 app.post('/feed', urlencodedParser,routes.vote);
 app.post('/textpost', urlencodedParser,routes.uploadPost);

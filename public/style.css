@@ -147,6 +147,39 @@ a{
     background-color: #900905;
     color: #FA739B;
 }
+.landingPage {
+    font-size: 30px;
+    border: 5px solid;
+    text-align: center;
+    height: 500px;
+}
+.landing_btn{
+    margin-left: 32.25%;
+}
+.landingBtn {
+    font-family: 'Staatliches', cursive;
+    color: black;
+    background-color: rgb(254, 255, 219); 
+    text-align: center;
+    width: 350px;
+    border-radius: 4px;
+    margin: 4px;
+    padding: 15px;
+    transition: ease-in-out 170ms;
+    background-color: rgb(149, 192, 218); 
+    font-size: 40px;
+    border: 0px;
+    box-shadow: 
+    1px 1px #111,
+    4px 4px #222,
+    6px 6px #000,
+    8px 8px #000,
+    10px 10px #000;
+}
+.landingBtn:hover{
+    background-color: #900905;
+    color: #FA739B;
+}
 .logPage {
     text-align: center;
     margin: 50px;
@@ -167,7 +200,12 @@ a{
     /* margin: 80px; */
     font-size: 28px;
 }
-
+.displayBorder{
+    border: 5px solid;
+    text-align: center;
+    font-size: 28px;
+    height: 500px;
+}
 .postBorder{
     border: 5px solid;
     text-align: center;

@@ -92,20 +92,26 @@ userData.findById("5e59b9380237258e8071509a", (err, user) => {
 })
 
 
-exports.index = (req, res) => { //login page
+exports.index = (req, res) => { //landing page
     Account.find((err, account) => {
         if (err) return console.error(err);
         res.render('index', {
-            title: 'Log In To Your Account',
+            title: 'UnPlugged',
+            accounts: account,
+            "config": config
+        });
+    });
+};
+
+exports.login = (req, res) => { //login page
+    Account.find((err, account) => {
+        if (err) return console.error(err);
+        res.render('login', {
+            title: 'Log Into Your Account',
             accounts: account
         });
     });
-    // res.render('login', {
-    //     "title": 'Log In To Your Account',
-    //     "config": config
-    // })
 };
-
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
@@ -379,7 +385,7 @@ const getAge = (DOB) => {
     var birthDate = new Date(DOB);
     var age = today.getFullYear() - birthDate.getFullYear();
     var month = today.getMonth() - birthDate.getMonth();
-    if (month < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
         age = age - 1;
     }
 

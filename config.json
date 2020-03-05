@@ -12,8 +12,11 @@
         ["Home", "/feed"],
         ["Text", "createTextPost"],
         ["Image", "createImagePost"]
-    ]
+    ],
 
-    
+    "landingPage": [
+        ["Login", "/login"],
+        ["Sign Up", "/signUp"]
+    ]
 
 }

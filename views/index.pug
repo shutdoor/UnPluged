@@ -2,15 +2,15 @@ extends layout
 
 block content
     div(class="logPage")
-            form(id='form' method='POST' action="/" class='loginPage')
-                label(for="username") Username:&nbsp;
+            form(id='form' method='POST' action="/login" class='loginPage')
+                label(for="Username") Username:&nbsp;
                 br
-                input(type="text" name="username" required)
+                input(type="text" name="Username" required)
                 br
-                label(for="password") Password:&nbsp;
+                label(for="Password") Password:&nbsp;
                 br
-                input(type="password" name="password" required)
+                input(type="Password" name="Password" required)
                 br
-                input(type='submit' value='Login' class="btn")
+                input(type='submit' value='Login Ow0' class="btn")
                 br
             a(href="/signUp" class="btn") Sign Up

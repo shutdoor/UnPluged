@@ -3,15 +3,26 @@ extends layout
 block content
     div(class="postBorder")
         nav
-            //- ul
-            //-     each item in config.createPost
-            //-         a(href = item[1])
-            //-             div(class='post_item')
-            //-                 li(id=item[0]) #{item[0]}
+            ul
+                each item in config.createPost
+                    a(href = item[1])
+                        div(class='post_item')
+                            li(id=item[0]) #{item[0]}
         p(class="pageHeader") Upload a Text Plug!
         form(id='form' method='POST' action="/textpost")
             p
                 textarea(id="text",name="postText",cols="40", rows="10")
+            p
+                select(name="category")
+                    option(value="Sports") Sports
+                    option(value="Movies") Movies
+                    option(value="TV") TV
+                    option(value="Cars") Cars
+                    option(value="Fashion") Fashion
+                    option(value="Events") Events
+                    option(value="Questions") Questions
+                    option(value="Memes") Memes
+                    option(value="LocalWeirdos") Local Weirdos
             p
                 input(type='submit',value='Plug It',class="btn")
                 

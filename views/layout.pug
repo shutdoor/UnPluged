@@ -1,13 +1,13 @@
 doctype html
 html
     head
-        link(href='style.css' rel='stylesheet')
+        link(href='/style.css' rel='stylesheet')
         title=title
         link(href="https://fonts.googleapis.com/css?family=Staatliches&display=swap" rel="stylesheet")
         link(href="https://fonts.googleapis.com/css?family=Coda+Caption:800&display=swap" rel="stylesheet")
     body
-        a(href="/")
-            div(id="titleBar")
-                p &nbsp;UnPlugged
+        div(id="titleBar")
+            a(href="/feed")
+                p(class="title") &nbsp;UnPlugged
         div(id="content")
             block content

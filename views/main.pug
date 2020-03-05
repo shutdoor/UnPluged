@@ -1,21 +1,22 @@
 extends layout
 
 block content
-    div(id="mainPage")
-        div(id="mainDesc")
-            p yeet
-        div(id="descBox")
-            div(id="subDesc")
-               a(href="/textpost")
-                    p Plug Something
-
+    div(class="postBorder")
+        nav
+            ul
+                each item in config.menu
+                    a(href = item[1])
+                        div(class='post_item')
+                            li(id=item[0]) #{item[0]}
         ul
             each post in posts
                 li 
                     div(class="textPost")
+                        //- - console.log(post)
                         p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+                        h5 #{post.Category}
                         p #{post.TextBody}
-                        p #{post.UserID}
+                        h6 #{post.Username}
                         p #{(post.Likes-post.Dislikes)}
                         ul
                             each comment in comments
@@ -27,6 +28,6 @@ block content
                             input(type="hidden" name="dbID" value=post._id)
                             input(type="hidden" name="currentScoreUp" value=post.Likes)
                             input(type="hidden" name="currentScoreDown" value=post.Dislikes)
-                            input(type="submit" name="Vote" value="Up")
-                            input(type="submit" name="Vote" value="Down")
-                            input(type="submit" name="Vote" value="comment")
+                            input(type="submit" name="Vote" value="Like")
+                            input(type="submit" name="Vote" value="Dislike")
+                            input(type="submit" name="Vote" value="Comment")

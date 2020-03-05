@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    div(id="Container")
+        div(id="editWrapper")
+            h1 Edit Information
+            form(id="editForm" method="POST" action="/edit")
+                label(for="firstName") First Name:&nbsp;
+                br
+                input(type="text" name="firstName" value=user.Name.First)
+                br
+                label(for="lastName") Last Name:&nbsp;
+                br
+                input(type="text" name="lastName" value=user.Name.Last)
+                br
+                label(for="username") Username:&nbsp;
+                br
+                input(type="text" name="username" value=user.Username)
+                br
+                label(for="password") Password:&nbsp;
+                br
+                input(type="password" name="password" value="")
+                br
+                label(for="email") Email:&nbsp;
+                br
+                input(type="email" name="email" value=user.Email)
+                br
+                label(for="DOB") Date Of Birth:&nbsp;
+                br
+                input(type="date" name="DOB" value=user.DOB)
+                br
+                br
+                input(type="submit" value="Save" class="submitButton")
+

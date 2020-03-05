@@ -196,10 +196,9 @@ const validateUserName = (userName) => {
             console.log(user.Username);
             if (String(user.Username) === String(userName)) {
                 return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
             }
         }
+        return false;
     });
 }
 
@@ -305,10 +304,11 @@ exports.vote = (req, res) => {
     var scoreDown = req.body.currentScoreDown
     if (req.body.Vote == "Like") {
         scoreUp++;
-        res.redirect('/feed')
-    } else if (req.body.Vote == "Dislike") {
+        res.redirect("/feed");
+    } 
+    if (req.body.Vote == "Dislike") {
         scoreDown++;
-        res.redirect('/feed')
+        res.redirect("/feed");
     } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
@@ -400,9 +400,8 @@ const validateEmail = (email) => {
             console.log(user.Email);
             if (String(user.Email) === String(email)) {
                 return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
             }
         }
+        return false;
     })
 }

@@ -19,7 +19,8 @@ block content
                             img(src='data:image/png;base64,'+post.Image class="postImage")
                         p #{post.TextBody}
                         h6 #{post.Username}
-                        p #{(post.Likes-post.Dislikes)}
+                        label Likes #{post.Likes} 
+                        label Dislikes #{post.Dislikes}
                         ul
                             each comment in comments
                                 if comment.PostID == post._id

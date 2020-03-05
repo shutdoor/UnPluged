@@ -254,3 +254,28 @@ li {
 .postImage{
     width:50vw;
 }
+.go_btn{
+    font-family: 'Staatliches', cursive;
+    color: black;
+    background-color: rgb(254, 255, 219); 
+    text-align: center;
+    width: 350px;
+    border-radius: 4px;
+    margin-left: 40px;
+    padding: 20px;
+    transition: ease-in-out 170ms;
+    background-color: rgb(149, 192, 218); 
+    font-size: 25px;
+    border: 0px;
+    box-shadow: 
+    1px 1px #111,
+    4px 4px #222,
+    6px 6px #000,
+    8px 8px #000,
+    10px 10px #000;
+}
+.go_btn:hover{
+    background-color: #900905;
+    color: #FA739B;
+    
+}

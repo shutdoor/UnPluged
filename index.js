@@ -7,8 +7,9 @@ const routes = require('./routes/routes');
 const config = require('./config');
 const expressSession = require("express-session");
 const cookieParser = require('cookie-parser');
-
 const app = express();
+
+var port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -70,4 +71,4 @@ app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/edit', urlencodedParser, routes.editUser);
 
-app.listen(3000);
+app.listen(port, () => console.log(`Server is currently running on port: ${port}`));

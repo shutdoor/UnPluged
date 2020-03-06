@@ -102,34 +102,21 @@ exports.index = (req, res) => {
     // })
 };
 
-
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
-    // console.log(currentLocation);
+    console.log(currentLocation);
     postData.find({
         UserLocation: currentLocation
     }, (err, postData) => {
         if (err) {
             console.error(err)
         } else {
-            postData.forEach(post => {
-                userData.find({
-                    UserID: post.UserID.toString()
-                }, (err, user) => {
-                    if (err) throw err;
-                    // console.log(post.Username+` is from ${user[0].UserLocation}`)
-                    var pIndex = postData.indexOf(post);
-                    if (user.UserLocation != currentLocation) {
-                        postData.splice(pIndex, 1);
-                    }
-                })
-            })
             commentData.find({}, (err, commentData) => {
                 if (err) {
                     console.error(err)
                 } else {
                     res.render('main', {
-                        Title: 'Home',
+                        title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
                         "config": config
@@ -139,6 +126,7 @@ exports.main = (req, res) => {
         }
     })
 };
+
 
 
 exports.userCreator = (req, res) => {
@@ -302,25 +290,28 @@ exports.createVideoPost = (req, res) => { //Video Post
 };
 
 exports.vote = (req, res) => {
-    // console.log(req.body);
     var scoreUp = req.body.currentScoreUp
     var scoreDown = req.body.currentScoreDown
     if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect('/feed')
+    console.log("Post Liked");
     } else if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect('/feed')
+    console.log("Post Disliked");
     } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
     }
     postData.findByIdAndUpdate(req.body.dbID, {
         $set: {
-            'Likes': scoreUp,
-            "Dislikes": scoreDown
+            Likes: scoreUp,
+            Dislikes: scoreDown
 
         }
+    }, (err, todo)=>{
+        if (err) throw err;
     });
 }
 
@@ -359,6 +350,92 @@ exports.createComment = (req, res) => {
 
     res.redirect('/feed');
 }
+
+exports.login = (req, res) => {
+    res.render('index');
+};
+
+exports.loginUser = (req, res) => {
+    console.log(req.body.Username);
+    userData.findOne({
+        Username: req.body.Username
+    }, (err, user) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (user && bcrypt.compareSync(req.body.Password, user.Password)) {
+                currentUser = user;
+                req.session.user = {
+                    isAuthenticated: true
+                }
+                // console.log("FICK MA")
+                res.redirect('/feed');
+                // console.log(`Current User is ${user}`);
+            }
+
+
+
+
+        }
+    });
+};
+
+exports.logout = (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect('/');
+        }
+    });
+};
+
+exports.edit = (req, res) => {
+    res.render('infoUpdate', {
+        user: currentUser
+    });
+};
+
+exports.editUser = (req, res) => {
+
+    var eye = req.body.selectEye;
+    var nose = req.body.selectNose;
+    var mouth = req.body.selectMouth;
+    var color = req.body.selectColor.substr(1);
+    if (req.body.password != '') {
+        User.findByIdAndUpdate(currentUser.id, {
+            $set: {
+                Username: req.body.Username,
+                Name: {
+                    First: req.body.Name.First,
+                    Last: req.body.Name.Last,
+                },
+                Password: bcrypt.hashSync(req.body.Password, bcrypt.genSaltSync(10)),
+                Email: req.body.Email,
+                DOB: req.body.DOB,
+                Age: getAge(req.body.DOB)
+            }
+        }, (err, todo) => {
+            if (err) throw err;
+        });
+    } else {
+        User.findByIdAndUpdate(currentUser.id, {
+            $set: {
+                Username: req.body.Username,
+                Name: {
+                    First: req.body.Name.First,
+                    Last: req.body.Name.Last,
+                },
+                Email: req.body.Email,
+                DOB: req.body.DOB,
+                Age: getAge(req.body.DOB)
+            }
+        }, (err, todo) => {
+            if (err) throw err;
+        });
+    }
+    res.redirect('/');
+};
 
 const getAge = (DOB) => {
     var today = new Date();

@@ -54,6 +54,7 @@ const checkAuth = (req, res, next) => {
 app.get('/', routes.index);
 app.get('/feed', routes.main);
 app.get('/createTextPost', routes.createTextPost);
+app.get('/createImagePost', routes.createImagePost);
 app.get('/comment', routes.comment);
 app.get('/signup', routes.userCreator);
 app.get('/logout', routes.logout);
@@ -64,7 +65,8 @@ app.get('/edit', routes.edit);
 app.post('/signup', urlencodedParser, routes.createUser);
 app.post('/feed', urlencodedParser, routes.vote);
 app.post('/login',urlencodedParser, routes.loginUser);
-app.post('/textpost', urlencodedParser, routes.uploadTextPost);
+app.post('/textpost', urlencodedParser, routes.uploadPost);
+app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/edit', urlencodedParser, routes.editUser);
 

@@ -40,6 +40,7 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 const checkAuth = (req, res, next) => {
+    // console.log(req.session.user);
     if (req.session.user != null) {
         if (req.session.user && req.session.user.isAuthenticated) {
             console.log(req.session.user);
@@ -52,14 +53,14 @@ const checkAuth = (req, res, next) => {
 
 //App Gets
 app.get('/', routes.index);
-app.get('/feed', routes.main);
-app.get('/createTextPost', routes.createTextPost);
-app.get('/createImagePost', routes.createImagePost);
-app.get('/comment', routes.comment);
+app.get('/feed',checkAuth, routes.main);
+app.get('/createTextPost',checkAuth, routes.createTextPost);
+app.get('/createImagePost',checkAuth, routes.createImagePost);
+app.get('/comment',checkAuth, routes.comment);
 app.get('/signup', routes.userCreator);
 app.get('/logout', routes.logout);
 app.get('/login', routes.login);
-app.get('/edit', routes.edit);
+app.get('/edit',checkAuth, routes.edit);
 
 //App Posts
 app.post('/signup', urlencodedParser, routes.createUser);

@@ -7,8 +7,9 @@ const routes = require('./routes/routes');
 const config = require('./config');
 const expressSession = require("express-session");
 const cookieParser = require('cookie-parser');
-
 const app = express();
+
+var port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -40,6 +41,7 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 const checkAuth = (req, res, next) => {
+    // console.log(req.session.user);
     if (req.session.user != null) {
         if (req.session.user && req.session.user.isAuthenticated) {
             console.log(req.session.user);
@@ -52,20 +54,22 @@ const checkAuth = (req, res, next) => {
 
 //App Gets
 app.get('/', routes.index);
-app.get('/feed', routes.main);
-app.get('/createTextPost', routes.createTextPost);
-app.get('/comment', routes.comment);
+app.get('/feed',checkAuth, routes.main);
+app.get('/createTextPost',checkAuth, routes.createTextPost);
+app.get('/createImagePost',checkAuth, routes.createImagePost);
+app.get('/comment',checkAuth, routes.comment);
 app.get('/signup', routes.userCreator);
 app.get('/logout', routes.logout);
 app.get('/login', routes.login);
-app.get('/edit', routes.edit);
+app.get('/edit',checkAuth, routes.edit);
 
 //App Posts
 app.post('/signup', urlencodedParser, routes.createUser);
 app.post('/feed', urlencodedParser, routes.vote);
 app.post('/login',urlencodedParser, routes.loginUser);
-app.post('/textpost', urlencodedParser, routes.uploadTextPost);
+app.post('/textpost', urlencodedParser, routes.uploadPost);
+app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/edit', urlencodedParser, routes.editUser);
 
-app.listen(3000);
+app.listen(port, () => console.log(`Server is currently running on port: ${port}`));

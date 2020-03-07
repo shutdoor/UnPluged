@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+const formidable = require('formidable');
 const expressSession = require('express-session');
 
 mongoose.Promise = global.Promise;
@@ -32,28 +33,19 @@ var UserSchema = new mongoose.Schema({
     UserLocation: String
 });
 
-var PostTextSchema = new mongoose.Schema({
+var PostSchema = new mongoose.Schema({
     UserID: String,
     Username: String,
     PostID: String,
     Tile: String,
     TextBody: String,
+    Image: String,
     Likes: Number,
     Dislikes: Number,
     Reports: Number,
     PostDate: Date,
-    Category: String
-});
-
-var PostImageSchema = new mongoose.Schema({
-    UserID: String,
-    PostID: String,
-    Tile: String,
-    ImageLink: String,
-    Likes: Number,
-    Dislikes: Number,
-    Reports: Number,
-    PostDate: Date
+    Category: String,
+    UserLocation: String
 });
 
 var CommentSchema = new mongoose.Schema({
@@ -73,8 +65,7 @@ var accountSchema = mongoose.Schema({
 });
 
 var Account = mongoose.model('Account_Collection', accountSchema);
-var textPostData = mongoose.model("textPost", PostTextSchema, "User Post");
-var imagePostData = mongoose.model("imagePost", PostImageSchema, "User Post");
+var postData = mongoose.model("textPost", PostSchema, "User Post");
 var commentData = mongoose.model("comment", CommentSchema, "Comments");
 var userData = mongoose.model("Users", UserSchema, "User Infomration");
 
@@ -105,44 +96,41 @@ exports.index = (req, res) => {
             accounts: account
         });
     });
+    // res.render('login', {
+    //     "title": 'Log In To Your Account',
+    //     "config": config
+    // })
 };
-
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
-
-    textPostData.find({}, (err, postData) => {
+    var isMod = (currentUser.Role === "Moderator");
+    console.log(currentUser.Role);
+    console.log(isMod);
+    console.log(currentLocation);
+    postData.find({
+        UserLocation: currentLocation
+    }, (err, postData) => {
         if (err) {
             console.error(err)
         } else {
-            postData.forEach(post => {
-                userData.find({
-                    UserID: post.UserID.toString()
-                }, (err, user) => {
-                    if (err) throw err;
-                    // console.log(post.Username+` is from ${user[0].UserLocation}`)
-                    var pIndex = postData.indexOf(post);
-                    if (user.UserLocation != currentLocation) {
-                        postData.splice(pIndex, 1);
-                    }
-                })
-            })
             commentData.find({}, (err, commentData) => {
                 if (err) {
                     console.error(err)
                 } else {
-                    // console.log(data);
                     res.render('main', {
-                        Title: 'Home',
+                        title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
-                        "config": config
+                        "config": config,
+                        "isMod": isMod
                     })
                 }
             })
         }
     })
 };
+
 
 
 exports.userCreator = (req, res) => {
@@ -152,74 +140,73 @@ exports.userCreator = (req, res) => {
 };
 
 var currentUser;
-exports.createUser = (req, res) => {
-    // var usernameBool = Boolean(validateUserName(req.body.username));
-    // var emailBool = Boolean(validateEmail(req.body.email));
+exports.createUser = async (req, res) => {
+    var usernameBool = false;
+    var emailBool = false;
 
-    // if (usernameBool && emailBool) {
-
-    var user = new userData({
-        Name: {
-            First: req.body.firstName,
-            Last: req.body.lastName
-        },
-        Username: req.body.username,
-        Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
-        Email: req.body.email,
-        DOB: req.body.DOB,
-        Age: getAge(req.body.DOB)
-    });
-
-    currentUser = user;
-
-    user.save((err, user) => {
-        if (err) return console.error(err);
-        console.log(req.body.username + ' added');
-    });
-
-    req.session.user = {
-        isAuthenticated: true
-    }
-
-    res.render('displayUser', {
-        currentUser: currentUser
-    });
-    //     } else if (usernameBool) {
-    //         console.log("Username is already in use.");
-    //         res.redirect("/signup");
-    //     } else if (emailBool) {
-    //         console.log("Email is already in use.")
-    //         res.redirect("/signup");
-    //     }
-};
-
-const validateUserName = (userName) => {
-    console.log(userName);
-    userData.findOne({
-        Username: userName
+    const usernameValid = await userData.findOne({
+        Username: req.body.username
     }, (err, user) => {
-        if (user != null) {
-            console.log(user.Username);
-            if (String(user.Username) === String(userName)) {
-                return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Username) == String(req.body.username)) {
+                console.log(req.body.username + user.Username);
+                usernameBool = true;
             }
         }
     });
-}
 
+    const emailValid = await userData.findOne({
+        Email: req.body.email
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Email) == String(req.body.email)) {
+                console.log(req.body.email + user.Email);
+                emailBool = true;
+            }
+        }
+    });
 
-exports.signUp = (req, res) => { //signing up
-    res.render('signUp', {
-        "title": 'Sign Up For An Account',
-        "config": config
-    })
+    if (!emailValid && !usernameValid) {
+
+        console.log(req.body.location);
+        var user = new userData({
+            Name: {
+                First: req.body.firstName,
+                Last: req.body.lastName
+            },
+            Username: req.body.username,
+            Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+            Email: req.body.email,
+            DOB: req.body.DOB,
+            Age: getAge(req.body.DOB),
+            UserLocation: req.body.location
+        });
+
+        currentUser = user;
+
+        user.save((err, user) => {
+            if (err) return console.error(err);
+            console.log(req.body.username + ' added');
+        });
+
+        req.session.user = {
+            isAuthenticated: true
+        }
+
+        res.render('displayUser', {
+            currentUser: currentUser
+        });
+    } else {
+        res.redirect("/signup")
+    }
+
 };
 
-exports.createImagePost = (req, res) => { //Image Post
-    res.render('createImagePost', {
-        "title": 'Upload a Post!',
+exports.signUp = (req, res) => { //signing up
+    res.render('userCreator', {
+        "title": 'Sign Up For An Account',
         "config": config
     })
 };
@@ -230,9 +217,9 @@ exports.createTextPost = (req, res) => { //Text Post
         "config": config
     })
 };
-exports.uploadTextPost = (req, res) => {
+exports.uploadPost = (req, res) => {
     // console.log(req.body.postText);
-    textPostData.create({
+    postData.create({
         UserID: currentUser.UserID,
         Username: currentUser.Username,
         TextBody: req.body.postText,
@@ -240,10 +227,69 @@ exports.uploadTextPost = (req, res) => {
         Dislikes: 0,
         PostDate: Date.now(),
         PostID: Date.now().toString(),
-        Category: req.body.category
+        Category: req.body.category,
+        UserLocation: currentUser.UserLocation,
+        Reports: 0
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
+    });
+    res.redirect('/feed');
+}
+
+
+exports.createImagePost = (req, res) => { //Image Post
+    res.render('createImagePost', {
+        "title": 'Upload a Post!',
+        "config": config
+    })
+};
+exports.uploadImage = (req, res) => {
+    // console.log(req.body.postText);
+
+    const form = formidable({
+        multiples: true
+    });
+    var imagePath;
+    form.parse(req)
+    //Upload File
+    form.on('fileBegin', (name, file) => {
+        file.path = __dirname + '\\uploads\\' + file.name;
+        imagePath = __dirname + '\\uploads\\' + file.name;
+        // console.log(imagePath);
+    });
+    form.on('file', (name, file) => {
+        //Encode File
+        fs.readFile(imagePath, (err, data) => {
+            if (err) console.error(err);
+            imgEncode = new Buffer(data).toString('base64');
+            // console.log(imgEncode);
+
+            //Create Post
+            postData.create({
+                UserID: currentUser.UserID,
+                Username: currentUser.Username,
+                TextBody: req.body.postText,
+                Likes: 0,
+                Dislikes: 0,
+                PostDate: Date.now(),
+                PostID: Date.now().toString(),
+                Category: req.body.category,
+                UserLocation: currentUser.UserLocation,
+                Image: imgEncode,
+                Reports: 0
+            }, (err, test) => {
+                if (err) return console.error(err);
+                console.log(test.toString() + " Added");
+            });
+
+            //Delete local file
+            fs.unlink(imagePath, (err) => {
+                if (err) console.error(err)
+            });
+
+        })
+
     });
     res.redirect('/feed');
 }
@@ -258,31 +304,46 @@ exports.createVideoPost = (req, res) => { //Video Post
 };
 
 exports.vote = (req, res) => {
-    // console.log(req.body);
     var scoreUp = req.body.currentScoreUp
     var scoreDown = req.body.currentScoreDown
+    var reports = req.body.reports;
     if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect('/feed')
+        // console.log("Post Liked");
     } else if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect('/feed')
+        // console.log("Post Disliked");
     } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
+    } else if (req.body.Vote == "Report") {
+        reports++;
+        res.redirect('/feed')
+    } else if (req.body.Vote == "Remove Post") {
+        console.log(req.body.dbID)
+        postData.remove({
+            _id: req.body.dbID
+        }, (err, todo) => {
+            if (err) throw err;
+        })
+        res.redirect('/feed')
     }
-    textPostData.findByIdAndUpdate(req.body.dbID, {
+    postData.findByIdAndUpdate(req.body.dbID, {
         $set: {
-            'Likes': scoreUp,
-            "Dislikes": scoreDown
-
+            Likes: scoreUp,
+            Dislikes: scoreDown,
+            Reports: reports
         }
+    }, (err, todo) => {
+        if (err) throw err;
     });
 }
 
 exports.comment = (req, res) => {
     var contextPostID = req.query.postID;
-    var contextPost = textPostData.findById(contextPostID, (err, cPost) => {
+    var contextPost = postData.findById(contextPostID, (err, cPost) => {
         if (err) return console.error(err);
         res.render('comment', {
             "title": "Comment",
@@ -333,14 +394,10 @@ exports.loginUser = (req, res) => {
                 req.session.user = {
                     isAuthenticated: true
                 }
-                console.log("FICK MA")
+                // console.log("FICK MA")
                 res.redirect('/feed');
                 console.log(`Current User is ${user}`);
             }
-
-
-
-
         }
     });
 };
@@ -355,51 +412,93 @@ exports.logout = (req, res) => {
     });
 };
 
+exports.account = (req, res) => {
+    res.render('displayUser')
+};
+
 exports.edit = (req, res) => {
-    res.render('infoUpdate', {
+    res.render('editUser', {
         user: currentUser
     });
 };
 
-exports.editUser = (req, res) => {
+exports.editUser = async (req, res) => {
+    var usernameBool = false;
+    var emailBool = false;
 
-    var eye = req.body.selectEye;
-    var nose = req.body.selectNose;
-    var mouth = req.body.selectMouth;
-    var color = req.body.selectColor.substr(1);
-    if (req.body.password != '') {
-        User.findByIdAndUpdate(currentUser.id, {
-            $set: {
-                Username: req.body.Username,
-                Name: {
-                    First: req.body.Name.First,
-                    Last: req.body.Name.Last,
-                },
-                Password: bcrypt.hashSync(req.body.Password, bcrypt.genSaltSync(10)),
-                Email: req.body.Email,
-                DOB: req.body.DOB,
-                Age: getAge(req.body.DOB)
+    console.log(currentUser);
+
+    const usernameValid = await userData.findOne({
+        Username: req.body.username
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Username) == String(req.body.username)) {
+                if(currentUser.Username == req.body.username){
+                    usernameBool = false;
+                }else{
+                    console.log(req.body.username + user.Username);
+                    usernameBool = true;
+                }
             }
-        }, (err, todo) => {
-            if (err) throw err;
-        });
+        }
+    });
+
+    const emailValid = await userData.findOne({
+        Email: req.body.email
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Email) == String(req.body.email)) {
+                if(currentUser.Email == req.body.emai){
+                    emailBool = false;
+                }
+                else{
+                    console.log(req.body.email + user.Email);
+                    emailBool = true;
+                }
+            }
+        }
+    });
+
+    if (!emailBool && !usernameBool) {
+        console.log(user)
+        if (req.body.password != '') {
+            UserSchema.findByIdAndUpdate(user.username, {
+                $set: {
+                    Username: req.body.Username,
+                    Name: {
+                        First: req.body.Name.First,
+                        Last: req.body.Name.Last,
+                    },
+                    Password: bcrypt.hashSync(req.body.Password, bcrypt.genSaltSync(10)),
+                    Email: req.body.Email,
+                    DOB: req.body.DOB,
+                    Age: getAge(req.body.DOB)
+                }
+            }, (err, todo) => {
+                if (err) throw err;
+            });
+        } else {
+            UserSchema.findByIdAndUpdate(user.username, {
+                $set: {
+                    Username: req.body.username,
+                    Name: {
+                        First: req.body.Name.first,
+                        Last: req.body.Name.last,
+                    },
+                    Email: req.body.email,
+                    DOB: req.body.DOB,
+                    Age: getAge(req.body.DOB)
+                }
+            }, (err, todo) => {
+                if (err) throw err;
+            });
+        }
+        res.redirect('/account');
     } else {
-        User.findByIdAndUpdate(currentUser.id, {
-            $set: {
-                Username: req.body.Username,
-                Name: {
-                    First: req.body.Name.First,
-                    Last: req.body.Name.Last,
-                },
-                Email: req.body.Email,
-                DOB: req.body.DOB,
-                Age: getAge(req.body.DOB)
-            }
-        }, (err, todo) => {
-            if (err) throw err;
-        });
+        res.redirect('/edit');
     }
-    res.redirect('/');
 };
 
 const getAge = (DOB) => {
@@ -407,24 +506,9 @@ const getAge = (DOB) => {
     var birthDate = new Date(DOB);
     var age = today.getFullYear() - birthDate.getFullYear();
     var month = today.getMonth() - birthDate.getMonth();
-    if (month < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
         age = age - 1;
     }
 
     return age;
-}
-const validateEmail = (email) => {
-    console.log(email);
-    userData.findOne({
-        Email: email
-    }, (err, user) => {
-        if (user != null) {
-            console.log(user.Email);
-            if (String(user.Email) === String(email)) {
-                return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
-            }
-        }
-    })
 }

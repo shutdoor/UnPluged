@@ -165,9 +165,9 @@ exports.createUser = (req, res) => {
         console.log(req.body.username + ' added');
     });
 
-    // req.session.user = {
-    //     isAuthenticated: true
-    // }
+    req.session.user = {
+        isAuthenticated: true
+    }
 
     res.render('displayUser', {
         currentUser: currentUser

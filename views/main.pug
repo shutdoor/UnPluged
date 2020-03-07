@@ -13,7 +13,12 @@ block content
                 li 
                     div(class="textPost")
                         //- - console.log(post)
-                        p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+                        if isMod
+                            p Report Count: #{post.Reports}
+                            form(id="RemovePost" method="post" action="/feed")
+                                input(type="hidden" name="id" value=post.PostID)
+                                input(type="hidden" name="dbID" value=post._id)
+                                input(type="submit" name="Vote" value="Remove Post")
                         h5 #{post.Category}
                         if post.Image != null
                             img(src='data:image/png;base64,'+post.Image class="postImage")
@@ -30,6 +35,8 @@ block content
                             input(type="hidden" name="dbID" value=post._id)
                             input(type="hidden" name="currentScoreUp" value=post.Likes)
                             input(type="hidden" name="currentScoreDown" value=post.Dislikes)
+                            input(type="hidden" name="reports" value=post.Reports)
                             input(type="submit" name="Vote" value="Like")
                             input(type="submit" name="Vote" value="Dislike")
                             input(type="submit" name="Vote" value="Comment")
+                            input(type="submit" name="Vote" value="Report")

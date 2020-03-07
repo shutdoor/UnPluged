@@ -104,6 +104,9 @@ exports.index = (req, res) => {
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
+    var isMod = (currentUser.Role === "Moderator");
+    console.log(currentUser.Role);
+    console.log(isMod);
     console.log(currentLocation);
     postData.find({
         UserLocation: currentLocation
@@ -119,7 +122,8 @@ exports.main = (req, res) => {
                         title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
-                        "config": config
+                        "config": config,
+                        "isMod": isMod
                     })
                 }
             })
@@ -218,7 +222,8 @@ exports.uploadPost = (req, res) => {
         PostDate: Date.now(),
         PostID: Date.now().toString(),
         Category: req.body.category,
-        UserLocation: currentUser.UserLocation
+        UserLocation: currentUser.UserLocation,
+        Reports:0
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
@@ -265,14 +270,17 @@ exports.uploadImage = (req, res) => {
                 PostID: Date.now().toString(),
                 Category: req.body.category,
                 UserLocation: currentUser.UserLocation,
-                Image:imgEncode
+                Image: imgEncode,
+                Reports:0
             }, (err, test) => {
                 if (err) return console.error(err);
                 console.log(test.toString() + " Added");
             });
 
             //Delete local file
-            fs.unlink(imagePath, (err)=>{if(err)console.error(err)});
+            fs.unlink(imagePath, (err) => {
+                if (err) console.error(err)
+            });
 
         })
 
@@ -292,25 +300,38 @@ exports.createVideoPost = (req, res) => { //Video Post
 exports.vote = (req, res) => {
     var scoreUp = req.body.currentScoreUp
     var scoreDown = req.body.currentScoreDown
+    var reports = req.body.reports;
     if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect('/feed')
-    console.log("Post Liked");
+        // console.log("Post Liked");
     } else if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect('/feed')
-    console.log("Post Disliked");
+        // console.log("Post Disliked");
     } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
+    } else if (req.body.Vote == "Report") {
+       reports++;
+       res.redirect('/feed')
+    } else if (req.body.Vote == "Remove Post") {
+        console.log(req.body.dbID)
+        postData.remove({
+            _id: req.body.dbID
+        }, (err, todo) => {
+            if (err) throw err;
+        })
+        res.redirect('/feed')
     }
     postData.findByIdAndUpdate(req.body.dbID, {
         $set: {
             Likes: scoreUp,
-            Dislikes: scoreDown
+            Dislikes: scoreDown,
+            Reports:reports
 
         }
-    }, (err, todo)=>{
+    }, (err, todo) => {
         if (err) throw err;
     });
 }

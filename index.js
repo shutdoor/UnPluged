@@ -28,4 +28,5 @@ app.post('/feed', urlencodedParser,routes.vote);
 app.post('/textpost', urlencodedParser,routes.uploadPost);
 app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
+app.get('/tagsPage', routes.tags);
 app.listen(3000);

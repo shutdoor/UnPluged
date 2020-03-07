@@ -138,6 +138,31 @@ exports.main = (req, res) => {
     })
 };
 
+exports.tags = (req, res) => {
+    // var currentLocation = currentUser.UserLocation;
+    // console.log(currentLocation);
+    postData.find({
+        // UserLocation: currentLocation
+    }, (err, postData) => {
+        if (err) {
+            console.error(err)
+        } else {
+            commentData.find({}, (err, commentData) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    res.render('tagsPage', {
+                        title: 'UnPlugged',
+                        "posts": postData,
+                        "comments": commentData,
+                        "config": config
+                    })
+                }
+            })
+        }
+    })
+};
+
 
 exports.userCreator = (req, res) => {
     res.render('userCreator', {

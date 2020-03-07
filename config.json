@@ -1,7 +1,7 @@
 {
     "menu": [
         ["Home", "/feed"],
-        ["Tags", "tagFiltering"],
+        ["Tags", "tagsPage"],
         ["Post", "createTextPost"],
         ["Logout", "/"]
         

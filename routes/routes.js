@@ -88,18 +88,15 @@ var currentUser;
 
 
 
-exports.index = (req, res) => {
+exports.index = (req, res) => { //landing page
     Account.find((err, account) => {
         if (err) return console.error(err);
         res.render('index', {
-            title: 'Log In To Your Account',
-            accounts: account
+            title: 'UnPlugged',
+            accounts: account,
+            "config": config
         });
     });
-    // res.render('login', {
-    //     "title": 'Log In To Your Account',
-    //     "config": config
-    // })
 };
 
 exports.main = (req, res) => {
@@ -119,6 +116,31 @@ exports.main = (req, res) => {
                     console.error(err)
                 } else {
                     res.render('main', {
+                        title: 'UnPlugged',
+                        "posts": postData,
+                        "comments": commentData,
+                        "config": config
+                    })
+                }
+            })
+        }
+    })
+};
+
+exports.tags = (req, res) => {
+    var tagsFiltering = currentUser.Category;
+    console.log(tagsFiltering);
+    postData.find({
+        Category: tagsFiltering
+    }, (err, postData) => {
+        if (err) {
+            console.error(err)
+        } else {
+            commentData.find({}, (err, commentData) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    res.render('tagsPage', {
                         title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
@@ -166,6 +188,7 @@ exports.createUser = async (req, res) => {
                 emailBool = true;
             }
         }
+        return false;
     });
 
     if (!emailValid && !usernameValid) {

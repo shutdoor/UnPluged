@@ -1,16 +1,18 @@
 extends layout
 
 block content
-    div(class="logPage")
-            form(id='form' method='POST' action="/login" class='loginPage')
-                label(for="Username") Username:&nbsp;
-                br
-                input(type="text" name="Username" required)
-                br
-                label(for="Password") Password:&nbsp;
-                br
-                input(type="Password" name="Password" required)
-                br
-                input(type='submit' value='Login' class="btn")
-                br
-            a(href="/signUp" class="btn") Sign Up
+    div(class="landingPage")
+        br
+        label(for="zipcode" class="pageHeader") Enter Zipcode&nbsp;
+        br
+        br
+        input(type="text" id='zipcode' name='zipcode')
+        a(class="go_btn" href="/feed") GO
+        br
+        nav(class="landing_btn")
+            ul
+                each item in config.landingPage
+                    a(href = item[1])
+                        br
+                        div(class='landingBtn')
+                            li(id=item[0]) #{item[0]}

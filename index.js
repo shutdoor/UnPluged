@@ -28,13 +28,11 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cookieParser());
 app.use(expressSession({
     secret: "$$@@**W@rd!as",
     saveUninitialized: true,
     resave: true
 }));
-
 
 const urlencodedParser = bodyParser.urlencoded({
     extended: true
@@ -59,13 +57,19 @@ app.get('/createTextPost',checkAuth, routes.createTextPost);
 app.get('/createImagePost',checkAuth, routes.createImagePost);
 app.get('/comment',checkAuth, routes.comment);
 app.get('/signup', routes.userCreator);
+app.get('/account',checkAuth, routes.account);
 app.get('/logout', routes.logout);
 app.get('/login', routes.login);
 app.get('/edit',checkAuth, routes.edit);
 
 //App Posts
+app.post('/like', routes.likePost);
+app.post('/dislike', routes.dislikePost);
+app.post('/report', routes.reportPost);
+// app.post('/like', routes.likePost);
+// app.post('/like', routes.likePost);
 app.post('/signup', urlencodedParser, routes.createUser);
-app.post('/feed', urlencodedParser, routes.vote);
+// app.post('/feed', urlencodedParser, routes.vote);
 app.post('/login',urlencodedParser, routes.loginUser);
 app.post('/textpost', urlencodedParser, routes.uploadPost);
 app.post('/imagepost', urlencodedParser, routes.uploadImage);

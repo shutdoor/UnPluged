@@ -256,7 +256,7 @@ exports.uploadImage = (req, res) => {
         //Encode File
         fs.readFile(imagePath, (err, data) => {
             if (err) console.error(err);
-            imgEncode = new Buffer(data).toString('base64');
+            var imgEncode = new Buffer(data).toString('base64');
             // console.log(imgEncode);
 
             //Create Post
@@ -303,18 +303,18 @@ exports.vote = (req, res) => {
     var reports = req.body.reports;
     if (req.body.Vote == "Like") {
         scoreUp++;
-        res.redirect('/feed')
+        // res.redirect('/feed')
         // console.log("Post Liked");
     } else if (req.body.Vote == "Dislike") {
         scoreDown++;
-        res.redirect('/feed')
+        // res.redirect('/feed')
         // console.log("Post Disliked");
     } else if (req.body.Vote == "Comment") {
         var postID = encodeURIComponent(req.body.dbID)
         res.redirect('/comment' + "/?postID=" + postID);
     } else if (req.body.Vote == "Report") {
        reports++;
-       res.redirect('/feed')
+    //    res.redirect('/feed')
     } else if (req.body.Vote == "Remove Post") {
         console.log(req.body.dbID)
         postData.remove({
@@ -322,7 +322,7 @@ exports.vote = (req, res) => {
         }, (err, todo) => {
             if (err) throw err;
         })
-        res.redirect('/feed')
+        // res.redirect('/feed')
     }
     postData.findByIdAndUpdate(req.body.dbID, {
         $set: {
@@ -333,6 +333,50 @@ exports.vote = (req, res) => {
         }
     }, (err, todo) => {
         if (err) throw err;
+    });
+    res.sendStatus(200);
+}
+
+exports.likePost = (req,res)=>{
+    postID = req.headers.postid;
+    var postLikes = 0;
+    postData.findOne({
+        PostID:postID
+    },(err,post)=>{
+        if (err) console.error(err)
+        postLikes = (post.Likes+1);
+        postData.findByIdAndUpdate(post._id, {Likes:postLikes}, (err,newPost)=>{
+            if (err) console.error(err)
+            res.send(`${(newPost.Likes)}`);
+        })
+    });
+}
+exports.dislikePost = (req,res)=>{
+    postID = req.headers.postid;
+    var postLikes = 0;
+    postData.findOne({
+        PostID:postID
+    },(err,post)=>{
+        if (err) console.error(err)
+        postLikes = (post.Dislikes+1);
+        postData.findByIdAndUpdate(post._id, {Dislikes:postLikes}, (err,newPost)=>{
+            if (err) console.error(err)
+            res.send(`${(newPost.Dislikes)}`);
+        })
+    });
+}
+exports.reportPost = (req,res)=>{
+    postID = req.headers.postid;
+    var postReports = 0;
+    postData.findOne({
+        PostID:postID
+    },(err,post)=>{
+        if (err) console.error(err)
+        postReports = (post.Reports+1);
+        postData.findByIdAndUpdate(post._id, {Reports:postReports}, (err,newPost)=>{
+            if (err) console.error(err)
+            res.send(`${(newPost.Reports)}`);
+        })
     });
 }
 

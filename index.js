@@ -63,6 +63,11 @@ app.get('/login', routes.login);
 app.get('/edit',checkAuth, routes.edit);
 
 //App Posts
+app.post('/like', routes.likePost);
+app.post('/dislike', routes.dislikePost);
+app.post('/report', routes.reportPost);
+// app.post('/like', routes.likePost);
+// app.post('/like', routes.likePost);
 app.post('/signup', urlencodedParser, routes.createUser);
 app.post('/feed', urlencodedParser, routes.vote);
 app.post('/login',urlencodedParser, routes.loginUser);

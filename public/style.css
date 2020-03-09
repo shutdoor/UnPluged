@@ -250,6 +250,8 @@ li {
 }
 .navBar{
     margin-right: 50px;
+    border: 5px solid;
+    width: 99.5%;
 }
 .postImage{
     width:50vw;

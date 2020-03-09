@@ -139,10 +139,10 @@ exports.main = (req, res) => {
 };
 
 exports.tags = (req, res) => {
-    // var currentLocation = currentUser.UserLocation;
-    // console.log(currentLocation);
+    var tagsFiltering = currentUser.Category;
+    console.log(tagsFiltering);
     postData.find({
-        // UserLocation: currentLocation
+        Category: tagsFiltering
     }, (err, postData) => {
         if (err) {
             console.error(err)

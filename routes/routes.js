@@ -195,9 +195,7 @@ exports.createUser = async (req, res) => {
             isAuthenticated: true
         }
 
-        res.render('displayUser', {
-            currentUser: currentUser
-        });
+        res.redirect("/feed")
     } else {
         res.redirect("/signup")
     }
@@ -396,7 +394,10 @@ exports.loginUser = (req, res) => {
                 }
                 // console.log("FICK MA")
                 res.redirect('/feed');
-                console.log(`Current User is ${user}`);
+                // console.log(`Current User is ${user}`);
+            }
+            else{
+                res.redirect("/login")
             }
         }
     });
@@ -413,10 +414,13 @@ exports.logout = (req, res) => {
 };
 
 exports.account = (req, res) => {
-    res.render('displayUser')
+    res.render('displayUser',{
+        currentUser: currentUser
+    })
 };
 
 exports.edit = (req, res) => {
+    // console.log("Edit Page: " + currentUser);
     res.render('editUser', {
         user: currentUser
     });
@@ -426,7 +430,7 @@ exports.editUser = async (req, res) => {
     var usernameBool = false;
     var emailBool = false;
 
-    console.log(currentUser);
+    console.log("Edit Post: " + currentUser);
 
     const usernameValid = await userData.findOne({
         Username: req.body.username
@@ -434,7 +438,7 @@ exports.editUser = async (req, res) => {
         if (err) console.error(err);
         else if (user != null) {
             if (String(user.Username) == String(req.body.username)) {
-                if(currentUser.Username == req.body.username){
+                if(currentUser.Username == user.Username){
                     usernameBool = false;
                 }else{
                     console.log(req.body.username + user.Username);
@@ -450,7 +454,7 @@ exports.editUser = async (req, res) => {
         if (err) console.error(err);
         else if (user != null) {
             if (String(user.Email) == String(req.body.email)) {
-                if(currentUser.Email == req.body.emai){
+                if(currentUser.Email == req.body.email){
                     emailBool = false;
                 }
                 else{
@@ -462,40 +466,37 @@ exports.editUser = async (req, res) => {
     });
 
     if (!emailBool && !usernameBool) {
-        console.log(user)
         if (req.body.password != '') {
-            UserSchema.findByIdAndUpdate(user.username, {
+            userData.findByIdAndUpdate(currentUser._id, {
                 $set: {
-                    Username: req.body.Username,
+                    Username: req.body.username,
                     Name: {
-                        First: req.body.Name.First,
-                        Last: req.body.Name.Last,
+                        First: req.body.firstName,
+                        Last: req.body.lastName,
                     },
-                    Password: bcrypt.hashSync(req.body.Password, bcrypt.genSaltSync(10)),
-                    Email: req.body.Email,
-                    DOB: req.body.DOB,
-                    Age: getAge(req.body.DOB)
+                    Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+                    Email: req.body.email
                 }
             }, (err, todo) => {
                 if (err) throw err;
             });
         } else {
-            UserSchema.findByIdAndUpdate(user.username, {
+            userData.findByIdAndUpdate(currentUser._id, {
                 $set: {
                     Username: req.body.username,
                     Name: {
-                        First: req.body.Name.first,
-                        Last: req.body.Name.last,
+                        First: req.body.firstName,
+                        Last: req.body.lastName
                     },
-                    Email: req.body.email,
-                    DOB: req.body.DOB,
-                    Age: getAge(req.body.DOB)
+                    Email: req.body.email
                 }
             }, (err, todo) => {
                 if (err) throw err;
             });
         }
-        res.redirect('/account');
+
+        res.redirect("/logout")
+
     } else {
         res.redirect('/edit');
     }

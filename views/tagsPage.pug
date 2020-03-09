@@ -8,7 +8,7 @@ block content
                     a(href = item[1])
                         div(class='post_item')
                             li(id=item[0]) #{item[0]}
-        form(id='form' method='POST' action="/textpost")
+        form(id='form' method='post' action="/tagsPage")
             p
                 select(name="category" id="category")
                     option(value="Sports") Sports
@@ -20,6 +20,7 @@ block content
                     option(value="Questions") Questions
                     option(value="Memes") Memes
                     option(value="LocalWeirdos") Local Weirdos
+                button(type="submit" value="GO")
         ul
             each post in posts
                 li 

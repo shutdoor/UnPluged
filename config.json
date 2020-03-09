@@ -1,7 +1,6 @@
 {
     "menu": [
         ["Home", "/feed"],
-        ["Tags", "tagsPage"],
         ["Post", "createTextPost"],
         ["Logout", "/"]
         

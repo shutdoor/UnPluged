@@ -139,10 +139,20 @@ exports.main = (req, res) => {
 };
 
 exports.tags = (req, res) => {
-    var tagsFiltering = currentUser.Category;
-    console.log(tagsFiltering);
+    var currentLocation = currentUser.UserLocation;
+    console.log(currentLocation);
+    console.log(req.body)
+    if (req.body == null) {
+        tagsFiltering = "Sports";
+        // req.body == "Sports";
+        console.log(req.body)
+    } else {
+        var tagsFiltering = req.body.category;
+        console.log(tagsFiltering);
+    }
     postData.find({
-        Category: tagsFiltering
+        Category: tagsFiltering,
+        UserLocation: currentLocation
     }, (err, postData) => {
         if (err) {
             console.error(err)
@@ -299,14 +309,14 @@ exports.uploadImage = (req, res) => {
                 PostID: Date.now().toString(),
                 Category: req.body.category,
                 UserLocation: currentUser.UserLocation,
-                Image:imgEncode
+                Image: imgEncode
             }, (err, test) => {
                 if (err) return console.error(err);
                 console.log(test.toString() + " Added");
             });
 
             //Delete local file
-            fs.unlink(imagePath, (err)=>{if(err)console.error(err)});
+            fs.unlink(imagePath, (err) => { if (err) console.error(err) });
 
         })
 
@@ -330,7 +340,7 @@ exports.vote = (req, res) => {
     if (req.body.Vote == "Like") {
         scoreUp++;
         res.redirect("/feed");
-    } 
+    }
     if (req.body.Vote == "Dislike") {
         scoreDown++;
         res.redirect("/feed");

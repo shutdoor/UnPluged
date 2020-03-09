@@ -15,7 +15,6 @@ block content
                 label(for="username") Username:&nbsp;
                 br
                 input(type="text" name="username")
-                p(name="usernameError")
                 br
                 label(for="password") Password:&nbsp;
                 br
@@ -27,7 +26,10 @@ block content
                 label(for="email") Email:&nbsp;
                 br
                 input(type="email" name="email")
-                p(name="emailError")
+                br
+                label(for="location") Zip Code:&nbsp;
+                br
+                input(type="text" name="location" pattern="^[0-9]{5}$" min="501" max="99950")
                 br
                 label(for="DOB") Date Of Birth:&nbsp;
                 br

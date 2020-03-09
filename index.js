@@ -7,8 +7,9 @@ const routes = require('./routes/routes');
 const config = require('./config');
 const expressSession = require("express-session");
 const cookieParser = require('cookie-parser');
-
 const app = express();
+
+var port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -27,13 +28,11 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cookieParser());
 app.use(expressSession({
     secret: "$$@@**W@rd!as",
     saveUninitialized: true,
     resave: true
 }));
-
 
 const urlencodedParser = bodyParser.urlencoded({
     extended: true
@@ -58,6 +57,7 @@ app.get('/createTextPost',checkAuth, routes.createTextPost);
 app.get('/createImagePost',checkAuth, routes.createImagePost);
 app.get('/comment',checkAuth, routes.comment);
 app.get('/signup', routes.userCreator);
+app.get('/account',checkAuth, routes.account);
 app.get('/logout', routes.logout);
 app.get('/login', routes.login);
 app.get('/edit',checkAuth, routes.edit);
@@ -76,4 +76,4 @@ app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/edit', urlencodedParser, routes.editUser);
 
-app.listen(3000);
+app.listen(port, () => console.log(`Server is currently running on port: ${port}`));

@@ -3,7 +3,7 @@ extends layout
 block content
     div(class="commentPost")
         p #{postContent}
-        form(id='form' method='POST' action="/comment")
+        form#form(method='POST' action="/comment")
             p
                 textarea(name="postText", cols="69", rows="5")
             p

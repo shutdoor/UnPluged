@@ -140,66 +140,70 @@ exports.userCreator = (req, res) => {
 };
 
 var currentUser;
-exports.createUser = (req, res) => {
-    // var usernameBool = Boolean(validateUserName(req.body.username));
-    // var emailBool = Boolean(validateEmail(req.body.email));
+exports.createUser = async (req, res) => {
+    var usernameBool = false;
+    var emailBool = false;
 
-    // if (usernameBool && emailBool) {
-
-    var user = new userData({
-        Name: {
-            First: req.body.firstName,
-            Last: req.body.lastName
-        },
-        Username: req.body.username,
-        Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
-        Email: req.body.email,
-        DOB: req.body.DOB,
-        Age: getAge(req.body.DOB)
-    });
-
-    currentUser = user;
-
-    user.save((err, user) => {
-        if (err) return console.error(err);
-        console.log(req.body.username + ' added');
-    });
-
-    // req.session.user = {
-    //     isAuthenticated: true
-    // }
-
-    res.render('displayUser', {
-        currentUser: currentUser
-    });
-    //     } else if (usernameBool) {
-    //         console.log("Username is already in use.");
-    //         res.redirect("/signup");
-    //     } else if (emailBool) {
-    //         console.log("Email is already in use.")
-    //         res.redirect("/signup");
-    //     }
-};
-
-const validateUserName = (userName) => {
-    console.log(userName);
-    userData.findOne({
-        Username: userName
+    const usernameValid = await userData.findOne({
+        Username: req.body.username
     }, (err, user) => {
-        if (user != null) {
-            console.log(user.Username);
-            if (String(user.Username) === String(userName)) {
-                return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Username) == String(req.body.username)) {
+                console.log(req.body.username + user.Username);
+                usernameBool = true;
             }
         }
     });
-}
 
+    const emailValid = await userData.findOne({
+        Email: req.body.email
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Email) == String(req.body.email)) {
+                console.log(req.body.email + user.Email);
+                emailBool = true;
+            }
+        }
+    });
+
+    if (!emailValid && !usernameValid) {
+
+        console.log(req.body.location);
+        var user = new userData({
+            Name: {
+                First: req.body.firstName,
+                Last: req.body.lastName
+            },
+            Username: req.body.username,
+            Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+            Email: req.body.email,
+            DOB: req.body.DOB,
+            Age: getAge(req.body.DOB),
+            UserLocation: req.body.location
+        });
+
+        currentUser = user;
+
+        user.save((err, user) => {
+            if (err) return console.error(err);
+            console.log(req.body.username + ' added');
+        });
+
+        req.session.user = {
+            isAuthenticated: true
+        }
+
+        res.redirect("/feed")
+    } else {
+        res.redirect("/signup")
+    }
+
+};
 
 exports.signUp = (req, res) => { //signing up
-    res.render('signUp', {
+    res.render('userCreator', {
         "title": 'Sign Up For An Account',
         "config": config
     })
@@ -397,10 +401,9 @@ exports.loginUser = (req, res) => {
                 res.redirect('/feed');
                 // console.log(`Current User is ${user}`);
             }
-
-
-
-
+            else{
+                res.redirect("/login")
+            }
         }
     });
 };
@@ -415,51 +418,93 @@ exports.logout = (req, res) => {
     });
 };
 
+exports.account = (req, res) => {
+    res.render('displayUser',{
+        currentUser: currentUser
+    })
+};
+
 exports.edit = (req, res) => {
-    res.render('infoUpdate', {
+    // console.log("Edit Page: " + currentUser);
+    res.render('editUser', {
         user: currentUser
     });
 };
 
-exports.editUser = (req, res) => {
+exports.editUser = async (req, res) => {
+    var usernameBool = false;
+    var emailBool = false;
 
-    var eye = req.body.selectEye;
-    var nose = req.body.selectNose;
-    var mouth = req.body.selectMouth;
-    var color = req.body.selectColor.substr(1);
-    if (req.body.password != '') {
-        User.findByIdAndUpdate(currentUser.id, {
-            $set: {
-                Username: req.body.Username,
-                Name: {
-                    First: req.body.Name.First,
-                    Last: req.body.Name.Last,
-                },
-                Password: bcrypt.hashSync(req.body.Password, bcrypt.genSaltSync(10)),
-                Email: req.body.Email,
-                DOB: req.body.DOB,
-                Age: getAge(req.body.DOB)
+    console.log("Edit Post: " + currentUser);
+
+    const usernameValid = await userData.findOne({
+        Username: req.body.username
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Username) == String(req.body.username)) {
+                if(currentUser.Username == user.Username){
+                    usernameBool = false;
+                }else{
+                    console.log(req.body.username + user.Username);
+                    usernameBool = true;
+                }
             }
-        }, (err, todo) => {
-            if (err) throw err;
-        });
+        }
+    });
+
+    const emailValid = await userData.findOne({
+        Email: req.body.email
+    }, (err, user) => {
+        if (err) console.error(err);
+        else if (user != null) {
+            if (String(user.Email) == String(req.body.email)) {
+                if(currentUser.Email == req.body.email){
+                    emailBool = false;
+                }
+                else{
+                    console.log(req.body.email + user.Email);
+                    emailBool = true;
+                }
+            }
+        }
+    });
+
+    if (!emailBool && !usernameBool) {
+        if (req.body.password != '') {
+            userData.findByIdAndUpdate(currentUser._id, {
+                $set: {
+                    Username: req.body.username,
+                    Name: {
+                        First: req.body.firstName,
+                        Last: req.body.lastName,
+                    },
+                    Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+                    Email: req.body.email
+                }
+            }, (err, todo) => {
+                if (err) throw err;
+            });
+        } else {
+            userData.findByIdAndUpdate(currentUser._id, {
+                $set: {
+                    Username: req.body.username,
+                    Name: {
+                        First: req.body.firstName,
+                        Last: req.body.lastName
+                    },
+                    Email: req.body.email
+                }
+            }, (err, todo) => {
+                if (err) throw err;
+            });
+        }
+
+        res.redirect("/logout")
+
     } else {
-        User.findByIdAndUpdate(currentUser.id, {
-            $set: {
-                Username: req.body.Username,
-                Name: {
-                    First: req.body.Name.First,
-                    Last: req.body.Name.Last,
-                },
-                Email: req.body.Email,
-                DOB: req.body.DOB,
-                Age: getAge(req.body.DOB)
-            }
-        }, (err, todo) => {
-            if (err) throw err;
-        });
+        res.redirect('/edit');
     }
-    res.redirect('/');
 };
 
 const getAge = (DOB) => {
@@ -472,19 +517,4 @@ const getAge = (DOB) => {
     }
 
     return age;
-}
-const validateEmail = (email) => {
-    console.log(email);
-    userData.findOne({
-        Email: email
-    }, (err, user) => {
-        if (user != null) {
-            console.log(user.Email);
-            if (String(user.Email) === String(email)) {
-                return true;
-            } else if (String(user.Email) != String(email)) {
-                return false;
-            }
-        }
-    })
 }

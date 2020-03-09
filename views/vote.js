@@ -3,7 +3,7 @@ var like = postID =>{
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("ScoreUp"+postID).innerHTML = this.responseText;
+     document.getElementById("ScoreUp"+postID).innerHTML = "👍 " + this.responseText;
     }
     };
     xhttp.open("POST", "/like", true);
@@ -15,7 +15,7 @@ var dislike = postID =>{
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("ScoreDown"+postID).innerHTML = this.responseText;
+     document.getElementById("ScoreDown"+postID).innerHTML = "👎 "+this.responseText;
     }
     };
     xhttp.open("POST", "/dislike", true);

@@ -35,3 +35,11 @@ var report = postID =>{
     xhttp.setRequestHeader("postID", postID)
     xhttp.send();
 }
+var comment = ID =>{
+    //- Console.log("test");
+    var postID = encodeURIComponent(ID)
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "/comment"+ "/?postID=" + postID, true);
+    xhttp.setRequestHeader("postID", postID)
+    xhttp.send();
+}

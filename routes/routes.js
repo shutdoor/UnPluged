@@ -297,46 +297,6 @@ exports.createVideoPost = (req, res) => { //Video Post
     })
 };
 
-exports.vote = (req, res) => {
-    var scoreUp = req.body.currentScoreUp
-    var scoreDown = req.body.currentScoreDown
-    var reports = req.body.reports;
-    if (req.body.Vote == "Like") {
-        scoreUp++;
-        // res.redirect('/feed')
-        // console.log("Post Liked");
-    } else if (req.body.Vote == "Dislike") {
-        scoreDown++;
-        // res.redirect('/feed')
-        // console.log("Post Disliked");
-    } else if (req.body.Vote == "Comment") {
-        var postID = encodeURIComponent(req.body.dbID)
-        res.redirect('/comment' + "/?postID=" + postID);
-    } else if (req.body.Vote == "Report") {
-       reports++;
-    //    res.redirect('/feed')
-    } else if (req.body.Vote == "Remove Post") {
-        console.log(req.body.dbID)
-        postData.remove({
-            _id: req.body.dbID
-        }, (err, todo) => {
-            if (err) throw err;
-        })
-        // res.redirect('/feed')
-    }
-    postData.findByIdAndUpdate(req.body.dbID, {
-        $set: {
-            Likes: scoreUp,
-            Dislikes: scoreDown,
-            Reports:reports
-
-        }
-    }, (err, todo) => {
-        if (err) throw err;
-    });
-    res.sendStatus(200);
-}
-
 exports.likePost = (req,res)=>{
     postID = req.headers.postid;
     var postLikes = 0;
@@ -382,12 +342,12 @@ exports.reportPost = (req,res)=>{
 
 exports.comment = (req, res) => {
     var contextPostID = req.query.postID;
-    var contextPost = postData.findById(contextPostID, (err, cPost) => {
+    postData.findOne({PostID:contextPostID}, (err, cPost) => {
         if (err) return console.error(err);
         res.render('comment', {
             "title": "Comment",
             "postContent": cPost.TextBody,
-            "postID": contextPostID
+            "postID": cPost._id
         })
     })
 }
@@ -402,7 +362,7 @@ exports.createComment = (req, res) => {
             commentData.create({
                 CommentID: Date.now().toString(),
                 PostID: req.body.postID,
-                UserID: currentUser.UserID,
+                UserID: currentUser.Username,
                 CommentTextBody: req.body.postText,
                 CommentDate: Date.now()
             }, (err, test) => {

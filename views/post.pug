@@ -1,30 +1,31 @@
-div(class="textPost")
-                        //- - console.log(post)
-                        if isMod
-                            p Report Count: #{post.Reports}
-                            form(id="RemovePost" method="post" action="/feed")
-                                input(type="hidden" name="id" value=post.PostID)
-                                input(type="hidden" name="dbID" value=post._id)
-                                input(type="submit" name="Vote" value="Remove Post")
-                        h5 #{post.Category}
-                        if post.Image != null
-                            img(src='data:image/png;base64,'+post.Image class="postImage")
-                        p #{post.TextBody}
-                        h6 #{post.Username}
-                        p(id="ScoreUp"+post.PostID) #{(post.Likes)}
-                        p(id="ScoreDown"+post.PostID) #{(post.Dislikes)}
-                        //- ul
-                        //-     each comment in comments
-                        //-         if comment.PostID == post._id
-                        //-             p _____________________________________________________________________
-                        //-             li #{comment.CommentTextBody}
-                        button(type="button"  onclick="like("+post.PostID+")") Like
-                        button(type="button"  onclick="dislike("+post.PostID+")") Dislike
-                        button(type="button" onclick="report("+post.PostID+")" ) Report
-                        form(id="Vote" method="post" action="/feed")
-                            input(type="hidden" name="id" value=post.PostID)
-                            input(type="hidden" name="dbID" value=post._id)
-                            input(type="hidden" name="currentScoreUp" value=post.Likes)
-                            input(type="hidden" name="currentScoreDown" value=post.Dislikes)
-                            input(type="hidden" name="reports" value=post.Reports)
-                            input(type="submit" name="Vote" value="Comment")
+div(class="post")
+    //- - console.log(post)
+    div(class="postBody")
+        h5 #{post.Category}
+        if post.Image != null
+            img(src='data:image/png;base64,'+post.Image class="postImage")
+        p #{post.TextBody}
+        h6 #{post.Username}
+
+
+    div(class="postVote")
+        p(id="ScoreUp"+post.PostID) 👍 #{(post.Likes)}
+        p(id="ScoreDown"+post.PostID) 👎 #{(post.Dislikes)}
+        if isMod
+            p Report Count: #{post.Reports}
+            form(id="RemovePost" method="post" action="/feed")
+                input(type="hidden" name="id" value=post.PostID)
+                input(type="hidden" name="dbID" value=post._id)
+                input(type="submit" name="Vote" value="Remove Post")
+        div(class="postButton" onclick="like("+post.PostID+")") 👍
+        div(class="postButton"  onclick="dislike("+post.PostID+")") 👎
+        div(class="postButton" onclick="report("+post.PostID+")" ) 🚩
+        a(href="/comment"+ "/?postID=" + post.PostID)
+            div(class="postButton") 💬
+
+
+    div(class="postComments")
+        ul
+            each comment in comments
+                if comment.PostID == post._id
+                    li(class="commentPost") #{comment.UserID}: #{comment.CommentTextBody}

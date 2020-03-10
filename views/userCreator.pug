@@ -27,6 +27,10 @@ block content
                 br
                 input(type="email" name="email")
                 br
+                label(for="location") Zip Code:&nbsp;
+                br
+                input(type="text" name="location" pattern="^[0-9]{5}$" min="501" max="99950")
+                br
                 label(for="DOB") Date Of Birth:&nbsp;
                 br
                 input(type="date" name="DOB")

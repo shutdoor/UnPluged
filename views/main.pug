@@ -23,27 +23,6 @@ block content
                 button(type="submit" value="GO" class="btn")
         ul
             each post in posts
-                li 
-                    div(class="textPost")
-                        //- - console.log(post)
-                        p _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-                        h5 #{post.Category}
-                        if post.Image != null
-                            img(src='data:image/png;base64,'+post.Image class="postImage")
-                        p #{post.TextBody}
-                        h6 #{post.Username}
-                        label Likes #{post.Likes} 
-                        label Dislikes #{post.Dislikes}
-                        ul
-                            each comment in comments
-                                if comment.PostID == post._id
-                                    p _____________________________________________________________________
-                                    li #{comment.CommentTextBody}
-                        form(id="Vote" method="post" action="/feed")
-                            input(type="hidden" name="id" value=post.PostID)
-                            input(type="hidden" name="dbID" value=post._id)
-                            input(type="hidden" name="currentScoreUp" value=post.Likes)
-                            input(type="hidden" name="currentScoreDown" value=post.Dislikes)
-                            input(type="submit" name="Vote" value="Like")
-                            input(type="submit" name="Vote" value="Dislike")
-                            input(type="submit" name="Vote" value="Comment")
+                include post.pug
+    script
+        include vote.js

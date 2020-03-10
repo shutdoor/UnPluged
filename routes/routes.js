@@ -89,6 +89,7 @@ var currentUser;
 
 
 exports.index = (req, res) => { //landing page
+    console.log(config);
     Account.find((err, account) => {
         if (err) return console.error(err);
         res.render('index', {
@@ -97,14 +98,15 @@ exports.index = (req, res) => { //landing page
             "config": config
         });
     });
+    
 };
 
 exports.main = (req, res) => {
     var currentLocation = currentUser.UserLocation;
     var isMod = (currentUser.Role === "Moderator");
-    console.log(currentUser.Role);
-    console.log(isMod);
-    console.log(currentLocation);
+    // console.log(currentUser.Role);
+    // console.log(isMod);
+    // console.log(currentLocation);
     postData.find({
         UserLocation: currentLocation
     }, (err, postData) => {
@@ -119,7 +121,8 @@ exports.main = (req, res) => {
                         title: 'UnPlugged',
                         "posts": postData,
                         "comments": commentData,
-                        "config": config
+                        "config": config,
+                        "isMod": isMod
                     })
                 }
             })
@@ -128,10 +131,21 @@ exports.main = (req, res) => {
 };
 
 exports.tags = (req, res) => {
-    var tagsFiltering = currentUser.Category;
-    console.log(tagsFiltering);
+    var currentLocation = currentUser.UserLocation;
+    var isMod = (currentUser.Role === "Moderator");
+    console.log(currentLocation);
+    console.log(req.body)
+    if (req.body == null) {
+        tagsFiltering = "Sports";
+        // req.body == "Sports";
+        console.log(req.body)
+    } else {
+        var tagsFiltering = req.body.category;
+        console.log(tagsFiltering);
+    }
     postData.find({
-        Category: tagsFiltering
+        Category: tagsFiltering,
+        UserLocation: currentLocation
     }, (err, postData) => {
         if (err) {
             console.error(err)
@@ -146,13 +160,13 @@ exports.tags = (req, res) => {
                         "comments": commentData,
                         "config": config,
                         "isMod": isMod
+
                     })
                 }
             })
         }
     })
 };
-
 
 
 exports.userCreator = (req, res) => {
@@ -250,7 +264,7 @@ exports.uploadPost = (req, res) => {
         PostID: Date.now().toString(),
         Category: req.body.category,
         UserLocation: currentUser.UserLocation,
-        Reports:0
+        Reports: 0
     }, (err, test) => {
         if (err) return console.error(err);
         console.log(test.toString() + " Added");
@@ -266,7 +280,7 @@ exports.createImagePost = (req, res) => { //Image Post
     })
 };
 exports.uploadImage = (req, res) => {
-    // console.log(req.body.postText);
+    console.log(req.body.category);
 
     const form = formidable({
         multiples: true
@@ -279,6 +293,11 @@ exports.uploadImage = (req, res) => {
         imagePath = __dirname + '\\uploads\\' + file.name;
         // console.log(imagePath);
     });
+    var category = "";
+    form.on('field', (fieldName, fieldValue) => {
+        category = fieldValue;
+      });
+    
     form.on('file', (name, file) => {
         //Encode File
         fs.readFile(imagePath, (err, data) => {
@@ -295,13 +314,13 @@ exports.uploadImage = (req, res) => {
                 Dislikes: 0,
                 PostDate: Date.now(),
                 PostID: Date.now().toString(),
-                Category: req.body.category,
+                Category: category,
                 UserLocation: currentUser.UserLocation,
                 Image: imgEncode,
-                Reports:0
+                Reports: 0
             }, (err, test) => {
                 if (err) return console.error(err);
-                console.log(test.toString() + " Added");
+                // console.log(test.toString() + " Added");
             });
 
             //Delete local file
@@ -324,43 +343,49 @@ exports.createVideoPost = (req, res) => { //Video Post
     })
 };
 
-exports.likePost = (req,res)=>{
+exports.likePost = (req, res) => {
     postID = req.headers.postid;
     var postLikes = 0;
     postData.findOne({
-        PostID:postID
-    },(err,post)=>{
+        PostID: postID
+    }, (err, post) => {
         if (err) console.error(err)
-        postLikes = (post.Likes+1);
-        postData.findByIdAndUpdate(post._id, {Likes:postLikes}, (err,newPost)=>{
+        postLikes = (post.Likes + 1);
+        postData.findByIdAndUpdate(post._id, {
+            Likes: postLikes
+        }, (err, newPost) => {
             if (err) console.error(err)
             res.send(`${(newPost.Likes)}`);
         })
     });
 }
-exports.dislikePost = (req,res)=>{
+exports.dislikePost = (req, res) => {
     postID = req.headers.postid;
     var postLikes = 0;
     postData.findOne({
-        PostID:postID
-    },(err,post)=>{
+        PostID: postID
+    }, (err, post) => {
         if (err) console.error(err)
-        postLikes = (post.Dislikes+1);
-        postData.findByIdAndUpdate(post._id, {Dislikes:postLikes}, (err,newPost)=>{
+        postLikes = (post.Dislikes + 1);
+        postData.findByIdAndUpdate(post._id, {
+            Dislikes: postLikes
+        }, (err, newPost) => {
             if (err) console.error(err)
             res.send(`${(newPost.Dislikes)}`);
         })
     });
 }
-exports.reportPost = (req,res)=>{
+exports.reportPost = (req, res) => {
     postID = req.headers.postid;
     var postReports = 0;
     postData.findOne({
-        PostID:postID
-    },(err,post)=>{
+        PostID: postID
+    }, (err, post) => {
         if (err) console.error(err)
-        postReports = (post.Reports+1);
-        postData.findByIdAndUpdate(post._id, {Reports:postReports}, (err,newPost)=>{
+        postReports = (post.Reports + 1);
+        postData.findByIdAndUpdate(post._id, {
+            Reports: postReports
+        }, (err, newPost) => {
             if (err) console.error(err)
             res.send(`${(newPost.Reports)}`);
         })
@@ -369,7 +394,9 @@ exports.reportPost = (req,res)=>{
 
 exports.comment = (req, res) => {
     var contextPostID = req.query.postID;
-    postData.findOne({PostID:contextPostID}, (err, cPost) => {
+    postData.findOne({
+        PostID: contextPostID
+    }, (err, cPost) => {
         if (err) return console.error(err);
         res.render('comment', {
             "title": "Comment",
@@ -404,7 +431,10 @@ exports.createComment = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    res.render('index');
+    res.render('login',{
+        title: 'Login',
+        "config": config
+    });
 };
 
 exports.loginUser = (req, res) => {
@@ -423,8 +453,7 @@ exports.loginUser = (req, res) => {
                 // console.log("FICK MA")
                 res.redirect('/feed');
                 // console.log(`Current User is ${user}`);
-            }
-            else{
+            } else {
                 res.redirect("/login")
             }
         }
@@ -442,7 +471,7 @@ exports.logout = (req, res) => {
 };
 
 exports.account = (req, res) => {
-    res.render('displayUser',{
+    res.render('displayUser', {
         currentUser: currentUser
     })
 };
@@ -466,9 +495,9 @@ exports.editUser = async (req, res) => {
         if (err) console.error(err);
         else if (user != null) {
             if (String(user.Username) == String(req.body.username)) {
-                if(currentUser.Username == user.Username){
+                if (currentUser.Username == user.Username) {
                     usernameBool = false;
-                }else{
+                } else {
                     console.log(req.body.username + user.Username);
                     usernameBool = true;
                 }
@@ -482,10 +511,9 @@ exports.editUser = async (req, res) => {
         if (err) console.error(err);
         else if (user != null) {
             if (String(user.Email) == String(req.body.email)) {
-                if(currentUser.Email == req.body.email){
+                if (currentUser.Email == req.body.email) {
                     emailBool = false;
-                }
-                else{
+                } else {
                     console.log(req.body.email + user.Email);
                     emailBool = true;
                 }
@@ -503,7 +531,8 @@ exports.editUser = async (req, res) => {
                         Last: req.body.lastName,
                     },
                     Password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
-                    Email: req.body.email
+                    Email: req.body.email,
+                    UserLocation: req.body.location
                 }
             }, (err, todo) => {
                 if (err) throw err;
@@ -516,7 +545,8 @@ exports.editUser = async (req, res) => {
                         First: req.body.firstName,
                         Last: req.body.lastName
                     },
-                    Email: req.body.email
+                    Email: req.body.email,
+                    UserLocation: req.body.location
                 }
             }, (err, todo) => {
                 if (err) throw err;

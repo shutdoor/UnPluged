@@ -10,7 +10,8 @@ block content
                             li(id=item[0]) #{item[0]}
         p(class="pageHeader") Upload An Image Plug!
         form(id='form' method='POST' action="/imagepost" enctype="multipart/form-data")
-            input(type="file" name="imageFile" accept=".png")
+            p
+                input(type="file" name="imageFile" accept=".png")
             p
                 select(name="category")
                     option(value="Sports") Sports

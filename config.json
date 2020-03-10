@@ -1,15 +1,22 @@
 {
     "menu": [
-        ["Home", "/"],
-        ["Post", "createTextPost"]
+        ["Home", "/feed"],
+        ["Post", "createTextPost"],
+        ["Logout", "/"],
+        ["Account", "/account"]
+        
 
     ],
 
     "createPost": [
-        ["Image", "createImagePost"],
-        ["Text", "createTextPost"]
-    ]
+        ["Home", "/feed"],
+        ["Text", "createTextPost"],
+        ["Image", "createImagePost"]
+    ],
 
-    
+    "landingPage": [
+        ["Login", "/login"],
+        ["Sign Up", "/signUp"]
+    ]
 
 }

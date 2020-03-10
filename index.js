@@ -46,7 +46,7 @@ const checkAuth = (req, res, next) => {
             next();
         }
     } else {
-        res.redirect('/login');
+        res.redirect('/');
     }
 }
 
@@ -75,5 +75,6 @@ app.post('/textpost', urlencodedParser, routes.uploadPost);
 app.post('/imagepost', urlencodedParser, routes.uploadImage);
 app.post('/comment', urlencodedParser, routes.createComment);
 app.post('/edit', urlencodedParser, routes.editUser);
+app.post('/tagsPage',urlencodedParser,checkAuth, routes.tags);
 
 app.listen(port, () => console.log(`Server is currently running on port: ${port}`));

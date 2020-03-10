@@ -25,6 +25,10 @@ block content
                 br
                 input(type="email" name="email" value=user.Email)
                 br
+                label(for="location") Zip Code:&nbsp;
+                br
+                input(type="text" name="location" pattern="^[0-9]{5}$" min="501" max="99950" value=user.UserLocation)
+                br
                 br
                 input(type="submit" value="Save" class="submitButton")
 

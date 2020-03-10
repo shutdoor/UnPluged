@@ -1,9 +1,9 @@
 extends layout
 
 block content
-    div(class="content")
-        h1 Sign Up
-            form(id="signUp" class="form" method="post" action="/signup")
+    div(class="postBorder")
+        p(class="pageHeader") Create an Account!
+            form(id="signUp" method="post" action="/signup")
                 label(for="firstName") First Name:&nbsp;
                 br
                 input(type="text" name="firstName" required)
@@ -36,6 +36,6 @@ block content
                 input(type="date" name="DOB")
                 br
                 br
-                input(type="submit" class="submitButton")
-                a(href="/")
-                    p(id="testP") Log In
+                input(type="submit" class="btn")
+                //- a(href="/")
+                //-     p(id="testP" class="landingBtn") Log In

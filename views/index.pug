@@ -1,13 +1,22 @@
-extends layout
-
-block content
-    div(class="landingPage")
-        br
-        br
-        nav(class="landing_btn")
-            ul
-                each item in config.landingPage
-                    a(href = item[1])
-                        br
-                        div(class='landingBtn')
-                            li(id=item[0]) #{item[0]}
+doctype html
+html
+    head
+        link(href='/style.css' rel='stylesheet')
+        title=title
+        link(href="https://fonts.googleapis.com/css?family=Staatliches&display=swap" rel="stylesheet")
+        link(href="https://fonts.googleapis.com/css?family=Coda+Caption:800&display=swap" rel="stylesheet")
+    body
+        div(id="titleBar")
+            a(href="/feed")
+                img(src="unpluggedTitle.png" height="300")
+        div(id="content")
+            div(class="landingPage")
+                br
+                br
+                nav(class="landing_btn")
+                    ul
+                        each item in config.landingPage
+                            a(href = item[1])
+                                br
+                                div(class='landingBtn')
+                                    li(id=item[0]) #{item[0]}

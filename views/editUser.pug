@@ -3,8 +3,11 @@ extends layout
 block content
     div(id="Container")
         div(id="editWrapper")
-            h1 Edit Information
             form(id="editForm" method="POST" action="/edit")
+                label(for="username") Username:&nbsp;
+                br
+                input(type="text" name="username" value=user.Username)
+                br
                 label(for="firstName") First Name:&nbsp;
                 br
                 input(type="text" name="firstName" value=user.Name.First)
@@ -12,10 +15,6 @@ block content
                 label(for="lastName") Last Name:&nbsp;
                 br
                 input(type="text" name="lastName" value=user.Name.Last)
-                br
-                label(for="username") Username:&nbsp;
-                br
-                input(type="text" name="username" value=user.Username)
                 br
                 label(for="password") Password:&nbsp;
                 br
@@ -30,5 +29,5 @@ block content
                 input(type="text" name="location" pattern="^[0-9]{5}$" min="501" max="99950" value=user.UserLocation)
                 br
                 br
-                input(type="submit" value="Save" class="submitButton")
+                input(type="submit" value="Save" class="editBtn")
 

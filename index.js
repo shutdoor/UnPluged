@@ -70,6 +70,7 @@ app.post('/report', routes.reportPost);
 // app.post('/like', routes.likePost);
 app.post('/signup', urlencodedParser, routes.createUser);
 // app.post('/feed', urlencodedParser, routes.vote);
+app.post('/remove', urlencodedParser, checkAuth, routes.removePost)
 app.post('/login',urlencodedParser, routes.loginUser);
 app.post('/textpost', urlencodedParser, routes.uploadPost);
 app.post('/imagepost', urlencodedParser, routes.uploadImage);

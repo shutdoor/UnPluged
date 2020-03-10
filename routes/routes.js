@@ -391,6 +391,16 @@ exports.reportPost = (req, res) => {
         })
     });
 }
+exports.removePost=(req,res)=>{
+    postData.findByIdAndDelete(req.body.dbID, (err,post)=>{
+        if (err) console.error(err)
+
+        res.redirect('/feed')
+    })
+}
+
+
+
 
 exports.comment = (req, res) => {
     var contextPostID = req.query.postID;

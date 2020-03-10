@@ -13,7 +13,7 @@ div(class="post")
         p(id="ScoreDown"+post.PostID) 👎 #{(post.Dislikes)}
         if isMod
             p Report Count: #{post.Reports}
-            form(id="RemovePost" method="post" action="/feed")
+            form(id="RemovePost" method="post" action="/remove")
                 input(type="hidden" name="id" value=post.PostID)
                 input(type="hidden" name="dbID" value=post._id)
                 input(type="submit" name="Vote" value="Remove Post")

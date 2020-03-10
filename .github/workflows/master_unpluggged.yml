@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'unpluggged'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b2500e5f53024735bbc51f6e1225282e }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_a8f87563940b4fefb80a1725c0fea50b }}
         package: .

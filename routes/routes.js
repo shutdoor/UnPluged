@@ -379,7 +379,9 @@ exports.createComment = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    res.render('index');
+    res.render('login',{
+        "config": config
+    });
 };
 
 exports.loginUser = (req, res) => {

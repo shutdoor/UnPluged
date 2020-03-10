@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    div(class="logPage")
+        form(id='form' method='POST' action="/login" class='loginPage')
+            br
+            label(for="username") Username:&nbsp;
+            br
+            input(type="text" name="Username" required)
+            br
+            br
+            label(for="password") Password:&nbsp;
+            br
+            input(type="password" name="Password" required)
+            br
+            br
+            input(type='submit' value='Login' class="btn")
+            

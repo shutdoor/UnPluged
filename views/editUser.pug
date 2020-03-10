@@ -7,15 +7,15 @@ block content
             form(id="editForm" method="POST" action="/edit")
                 label(for="firstName") First Name:&nbsp;
                 br
-                input(type="text" name="firstName" value=user.Name.First)
+                input(type="text" required name="firstName" value=user.Name.First)
                 br
                 label(for="lastName") Last Name:&nbsp;
                 br
-                input(type="text" name="lastName" value=user.Name.Last)
+                input(type="text" required name="lastName" value=user.Name.Last)
                 br
                 label(for="username") Username:&nbsp;
                 br
-                input(type="text" name="username" value=user.Username)
+                input(type="text" required name="username" value=user.Username)
                 br
                 label(for="password") Password:&nbsp;
                 br
@@ -23,7 +23,11 @@ block content
                 br
                 label(for="email") Email:&nbsp;
                 br
-                input(type="email" name="email" value=user.Email)
+                input(type="email" required name="email" value=user.Email)
+                br
+                label(for="location") Zip Code:&nbsp;
+                br
+                input(type="text" required name="location" pattern="^[0-9]{5}$" min="501" max="99950" value=user.UserLocation)
                 br
                 br
                 input(type="submit" value="Save" class="submitButton")
